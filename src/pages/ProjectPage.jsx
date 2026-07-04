@@ -1,0 +1,152 @@
+import { useState } from "react";
+import { useParams, Navigate, Link } from "react-router-dom";
+import { motion, useReducedMotion } from "framer-motion";
+import { fadeUp, stagger } from "../lib/motion";
+import { useI18n } from "../i18n/LanguageContext";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
+import { getProject } from "../data/projects";
+import DossierModal from "../components/DossierModal";
+
+const STATUS_TONE = {
+  red: "border-red-500/40 bg-red-500/10 text-red-400",
+  amber: "border-amber-400/40 bg-amber-400/10 text-amber-300",
+  green: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
+  neon: "border-neon/40 bg-neon/10 text-neon",
+  neutral: "border-white/10 text-white/40",
+};
+
+function Block({ label, children }) {
+  return (
+    <motion.section variants={fadeUp} className="border-t border-gridline pt-8">
+      <p className="font-mono text-xs tracking-[0.35em] text-neon">{label}</p>
+      <div className="mt-5">{children}</div>
+    </motion.section>
+  );
+}
+
+export default function ProjectPage() {
+  const { slug } = useParams();
+  const project = getProject(slug);
+  const shouldReduce = useReducedMotion();
+  const { t } = useI18n();
+  const [dossierOpen, setDossierOpen] = useState(false);
+
+  // Hooks must run unconditionally — optional chaining keeps this safe when
+  // the slug doesn't resolve to a flagship project.
+  useDocumentMeta({ title: project?.title, description: project?.summary });
+
+  // Only flagship projects have dedicated pages; anything else returns home.
+  if (!project || !project.flagship) return <Navigate to="/" replace />;
+
+  return (
+    <div className="mx-auto max-w-3xl px-6 pb-28 pt-28 md:pt-32">
+      <Link
+        to="/#operations"
+        className="inline-flex items-center font-mono text-[11px] tracking-[0.25em] text-white/40 transition-colors duration-300 hover:text-neon"
+      >
+        {t("project.back")}
+      </Link>
+
+      <motion.div
+        variants={stagger}
+        initial={shouldReduce ? false : "hidden"}
+        animate="visible"
+        className="mt-8"
+      >
+        <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2 font-mono text-[10px] tracking-[0.2em]">
+          {project.statusTags?.map((tag) => (
+            <span
+              key={tag.text}
+              className={`rounded border px-2 py-1 ${STATUS_TONE[tag.tone] ?? STATUS_TONE.neutral}`}
+            >
+              {tag.text}
+            </span>
+          ))}
+        </motion.div>
+
+        <motion.p variants={fadeUp} className="mt-6 font-mono text-[11px] tracking-[0.35em] text-neon">
+          {project.codename}
+        </motion.p>
+        <motion.h1 variants={fadeUp} className="mt-3 font-display text-4xl font-bold text-white md:text-5xl">
+          {project.title}
+        </motion.h1>
+        <motion.p variants={fadeUp} className="mt-5 max-w-2xl font-mono text-sm leading-relaxed text-white/60 md:text-base">
+          {project.summary}
+        </motion.p>
+
+        <motion.div variants={fadeUp} className="mt-7 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.2em]">
+          <button
+            type="button"
+            onClick={() => setDossierOpen(true)}
+            className="border border-red-500/40 bg-red-500/[0.06] px-4 py-2.5 text-red-300 transition-all duration-300 hover:bg-red-500/15"
+          >
+            {t("project.openCaseFile")}
+          </button>
+          <a
+            href={project.repo}
+            target="_blank"
+            rel="noreferrer"
+            className="border border-white/15 px-4 py-2.5 text-white/55 transition-colors duration-300 hover:border-neon/40 hover:text-neon"
+          >
+            {t("project.viewOnGithub")}
+          </a>
+        </motion.div>
+      </motion.div>
+
+      {project.authorized && (
+        <motion.p
+          initial={shouldReduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mt-10 rounded-lg border border-amber-400/25 bg-amber-400/[0.04] p-4 font-mono text-xs leading-relaxed text-amber-200/70"
+        >
+          ⚠ {project.authorized}
+        </motion.p>
+      )}
+
+      <motion.div
+        variants={stagger}
+        initial={shouldReduce ? false : "hidden"}
+        whileInView="visible"
+        viewport={{ once: true, margin: "-40px" }}
+        className="mt-14 space-y-12"
+      >
+        <Block label={t("project.sections.overview")}>
+          <p className="max-w-2xl font-mono text-sm leading-relaxed text-white/60">
+            {project.overview}
+          </p>
+        </Block>
+
+        <Block label={t("project.sections.architecture")}>
+          <dl className="space-y-3 font-mono text-xs md:text-sm">
+            {project.architecture?.map(([k, v]) => (
+              <div key={k} className="grid grid-cols-1 gap-1 sm:grid-cols-[160px_1fr] sm:gap-4">
+                <dt className="text-neon/80">{k}</dt>
+                <dd className="text-white/60">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </Block>
+
+        <Block label={t("project.sections.methodology")}>
+          <ul className="space-y-2.5 font-mono text-xs leading-relaxed text-white/60 md:text-sm">
+            {project.methodology?.map((line) => (
+              <li key={line} className="flex gap-3">
+                <span className="text-neon">▸</span>
+                {line}
+              </li>
+            ))}
+          </ul>
+        </Block>
+
+        <Block label={t("project.sections.outcome")}>
+          <p className="max-w-2xl font-mono text-sm leading-relaxed text-neon/90">
+            {project.outcome}
+          </p>
+        </Block>
+      </motion.div>
+
+      <DossierModal open={dossierOpen} onClose={() => setDossierOpen(false)} project={project} />
+    </div>
+  );
+}

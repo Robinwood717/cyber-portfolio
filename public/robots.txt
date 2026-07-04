@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Add your sitemap once a domain is assigned:
+# Sitemap: https://your-domain.tld/sitemap.xml

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#050505" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0 L0 0 0 48" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#050505"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <text x="80" y="150" font-family="monospace" font-size="22" letter-spacing="8" fill="#10b981">SECURITY &amp; INFORMATION SYSTEMS ENGINEER</text>
+  <text x="76" y="300" font-family="'Space Grotesk', sans-serif" font-size="104" font-weight="700" fill="#ffffff">ANASTASIOS</text>
+  <text x="76" y="410" font-family="'Space Grotesk', sans-serif" font-size="104" font-weight="700" fill="#ffffff">SOUMPAKIS</text>
+  <text x="80" y="520" font-family="monospace" font-size="24" letter-spacing="4" fill="#9ca3af">incident response // system hardening // privacy engineering</text>
+  <text x="80" y="575" font-family="monospace" font-size="20" letter-spacing="4" fill="#10b981">&gt; github.com/Robinwood717</text>
+</svg>
