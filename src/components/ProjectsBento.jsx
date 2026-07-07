@@ -49,7 +49,7 @@ function CardShell({ index, className = "", children }) {
   );
 }
 
-function FlagshipCard({ project, index, t }) {
+function FlagshipCard({ project, index, t, tr }) {
   return (
     <CardShell index={index} className="lg:col-span-2">
       <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] tracking-[0.2em]">
@@ -67,13 +67,13 @@ function FlagshipCard({ project, index, t }) {
       </div>
 
       <p className="mt-5 font-mono text-[10px] tracking-[0.3em] text-neon">
-        {project.eyebrow}
+        {tr(project.eyebrow)}
       </p>
       <h3 className="mt-2 font-display text-2xl font-semibold md:text-3xl">
         {project.title}
       </h3>
       <p className="mt-4 max-w-2xl font-mono text-xs leading-relaxed text-white/55 md:text-sm">
-        {project.summary}
+        {tr(project.summary)}
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2">
@@ -85,7 +85,7 @@ function FlagshipCard({ project, index, t }) {
       <div className="mt-7 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.2em]">
         <Link
           to={`/ops/${project.slug}`}
-          className="flex items-center gap-2 border border-neon/40 bg-neon/[0.06] px-4 py-2.5 text-neon transition-all duration-300 hover:bg-neon/15 hover:shadow-glow-sm"
+          className="flex items-center gap-2 border border-neon/40 bg-neon/[0.06] px-4 py-2.5 text-neon transition-all duration-200 hover:bg-neon/15 hover:shadow-glow-sm active:scale-[0.97]"
         >
           {t("operations.openDossier")} <span aria-hidden="true">→</span>
         </Link>
@@ -93,7 +93,7 @@ function FlagshipCard({ project, index, t }) {
           href={project.repo}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-2 border border-white/15 px-4 py-2.5 text-white/55 transition-colors duration-300 hover:border-white/40 hover:text-white"
+          className="flex items-center gap-2 border border-white/15 px-4 py-2.5 text-white/55 transition-[color,border-color,transform] duration-300 hover:border-white/40 hover:text-white active:scale-[0.97] active:duration-100"
         >
           {t("operations.viewSource")} <span aria-hidden="true">↗</span>
         </a>
@@ -102,15 +102,15 @@ function FlagshipCard({ project, index, t }) {
   );
 }
 
-function RepoCard({ project, index, t }) {
+function RepoCard({ project, index, t, tr }) {
   return (
     <CardShell index={index}>
-      <p className="font-mono text-[10px] tracking-[0.3em] text-neon">{project.eyebrow}</p>
+      <p className="font-mono text-[10px] tracking-[0.3em] text-neon">{tr(project.eyebrow)}</p>
       <h3 className="mt-3 font-display text-xl font-semibold md:text-2xl">
         {project.title}
       </h3>
       <p className="mt-4 font-mono text-xs leading-relaxed text-white/55 md:text-sm">
-        {project.summary}
+        {tr(project.summary)}
       </p>
       <div className="mt-6 flex flex-wrap gap-2">
         {project.tags.map((tag) => (
@@ -148,8 +148,8 @@ function TelemetryCard({ index, t }) {
             key={key}
             className="flex items-baseline justify-between gap-4 border-b border-white/5 pb-2"
           >
-            <span className="text-white/30">{key}</span>
-            <span className={hot ? "text-neon" : "text-white/70"}>{value}</span>
+            <span className="text-white/55">{key}</span>
+            <span className={hot ? "text-neon" : "text-white/80"}>{value}</span>
           </p>
         ))}
       </div>
@@ -159,7 +159,7 @@ function TelemetryCard({ index, t }) {
 
 export default function ProjectsBento() {
   const shouldReduce = useReducedMotion();
-  const { t } = useI18n();
+  const { t, tr } = useI18n();
 
   const flagships = PROJECTS.filter((p) => p.flagship);
   const repos = PROJECTS.filter((p) => !p.flagship);
@@ -167,7 +167,7 @@ export default function ProjectsBento() {
   return (
     <section id="operations" className="relative border-t border-gridline scroll-mt-24">
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <SectionHeader index="05" label={t("operations.label")} title={t("operations.title")} />
+        <SectionHeader index="06" label={t("operations.label")} title={t("operations.title")} />
 
         <motion.div
           variants={stagger}
@@ -176,11 +176,11 @@ export default function ProjectsBento() {
           viewport={{ once: true, margin: "-60px" }}
           className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3"
         >
-          {flagships[0] && <FlagshipCard project={flagships[0]} index="01" t={t} />}
+          {flagships[0] && <FlagshipCard project={flagships[0]} index="01" t={t} tr={tr} />}
           <TelemetryCard index="02" t={t} />
-          {flagships[1] && <FlagshipCard project={flagships[1]} index="03" t={t} />}
+          {flagships[1] && <FlagshipCard project={flagships[1]} index="03" t={t} tr={tr} />}
           {repos.map((project, i) => (
-            <RepoCard key={project.slug} project={project} index={`0${i + 4}`} t={t} />
+            <RepoCard key={project.slug} project={project} index={`0${i + 4}`} t={t} tr={tr} />
           ))}
         </motion.div>
       </div>

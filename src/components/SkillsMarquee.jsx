@@ -1,17 +1,10 @@
 import { motion } from "framer-motion";
+import { useI18n } from "../i18n/LanguageContext";
 
-const FOCUS_AREAS = [
-  "Incident Response",
-  "Network Security",
-  "Advanced Data Structures",
-  "Discrete Mathematics",
-  "Privacy by Design",
-];
-
-function MarqueeRun({ hidden = false }) {
+function MarqueeRun({ areas, hidden = false }) {
   return (
     <div aria-hidden={hidden} className="flex shrink-0 items-center">
-      {FOCUS_AREAS.map((area) => (
+      {areas.map((area) => (
         <span
           key={area}
           className="flex items-center font-display text-sm font-medium uppercase tracking-[0.3em] text-white/60"
@@ -27,6 +20,9 @@ function MarqueeRun({ hidden = false }) {
 }
 
 export default function SkillsMarquee() {
+  const { t } = useI18n();
+  const areas = t("marquee.areas");
+
   return (
     <section
       aria-label="Focus areas"
@@ -37,8 +33,8 @@ export default function SkillsMarquee() {
         animate={{ x: ["0%", "-50%"] }}
         transition={{ ease: "linear", duration: 30, repeat: Infinity }}
       >
-        <MarqueeRun />
-        <MarqueeRun hidden />
+        <MarqueeRun areas={areas} />
+        <MarqueeRun areas={areas} hidden />
       </motion.div>
       <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-void to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-void to-transparent" />

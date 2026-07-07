@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import ScanlineOverlay from "./components/ScanlineOverlay";
+import LivingBackground from "./components/LivingBackground";
+import CustomCursor from "./components/CustomCursor";
 import ScrollProgress from "./components/ScrollProgress";
 import Navbar from "./components/Navbar";
 import CommandPalette from "./components/CommandPalette";
@@ -54,11 +56,13 @@ export default function App() {
       >
         {t("nav.search") === "ΑΝΑΖΗΤΗΣΗ" ? "ΜΕΤΑΒΑΣΗ ΣΤΟ ΠΕΡΙΕΧΟΜΕΝΟ" : "SKIP TO CONTENT"}
       </a>
+      <LivingBackground />
+      <CustomCursor />
       <ScanlineOverlay />
       <ScrollProgress />
       <ScrollManager />
       <Navbar onOpenPalette={openPalette} />
-      <main id="main">
+      <main id="main" className="relative z-10">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/ops/:slug" element={<ProjectPage />} />

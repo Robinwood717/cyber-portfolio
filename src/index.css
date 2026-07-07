@@ -68,6 +68,46 @@
       transparent 3px
     );
   }
+
+  /* Custom neon cursor — dot tracks 1:1, ring eases behind and swells on
+     interactive targets. Toggled on by CustomCursor via .has-custom-cursor. */
+  .cursor-dot,
+  .cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    pointer-events: none;
+    border-radius: 9999px;
+    will-change: transform;
+  }
+  .cursor-dot {
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
+    background: #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.9);
+  }
+  .cursor-ring {
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border: 1px solid rgba(16, 185, 129, 0.6);
+    transition: width 0.2s ease, height 0.2s ease, margin 0.2s ease,
+      border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .cursor-ring[data-hover="1"] {
+    width: 54px;
+    height: 54px;
+    margin: -27px 0 0 -27px;
+    border-color: rgba(16, 185, 129, 0.9);
+    background-color: rgba(16, 185, 129, 0.08);
+  }
+}
+
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

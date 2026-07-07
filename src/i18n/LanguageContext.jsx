@@ -52,7 +52,25 @@ export function LanguageProvider({ children }) {
     [lang]
   );
 
-  const value = useMemo(() => ({ lang, setLang, toggle, t }), [lang, toggle, t]);
+  // tr(value) → localizes an inline field carried by the data files. Bare
+  // strings pass through; a { en, el } pair resolves to the active language,
+  // falling back to English when the Greek side is missing or still TODO_EL.
+  const tr = useCallback(
+    (value) => {
+      if (value == null || typeof value === "string") return value;
+      if (typeof value === "object" && ("en" in value || "el" in value)) {
+        const localized = value[lang];
+        return isUntranslated(localized) ? value.en : localized;
+      }
+      return value;
+    },
+    [lang]
+  );
+
+  const value = useMemo(
+    () => ({ lang, setLang, toggle, t, tr }),
+    [lang, toggle, t, tr]
+  );
 
   return (
     <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>

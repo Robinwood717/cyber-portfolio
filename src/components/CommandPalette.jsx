@@ -23,6 +23,7 @@ export default function CommandPalette({ open, onClose }) {
       ["home", "/", "home start top"],
       ["doctrine", "/#doctrine", "education doctrine"],
       ["experience", "/#experience", "engagements track record work"],
+      ["commandcenter", "/#commandcenter", "command center soc dashboard live ops telemetry"],
       ["killchain", "/#killchain", "kill chain incident ir case"],
       ["operations", "/#operations", "projects operations case files"],
       ["contact", "/#contact", "contact email connect channel"],
@@ -35,7 +36,7 @@ export default function CommandPalette({ open, onClose }) {
 
     const ops = PROJECTS.filter((p) => p.flagship).map((p) => ({
       group: "operations",
-      label: `${t("operations.openDossier")} — ${p.title}`,
+      label: `${t("operations.openDossier")}: ${p.title}`,
       keywords: `${p.title} ${p.slug} ${p.tags.join(" ")}`.toLowerCase(),
       run: () => {
         navigate(`/ops/${p.slug}`);

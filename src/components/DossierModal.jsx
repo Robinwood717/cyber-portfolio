@@ -7,7 +7,7 @@ const FOCUSABLE =
 
 export default function DossierModal({ open, onClose, project }) {
   const shouldReduce = useReducedMotion();
-  const { t } = useI18n();
+  const { t, tr } = useI18n();
   const panelRef = useRef(null);
   const closeRef = useRef(null);
 
@@ -74,7 +74,7 @@ export default function DossierModal({ open, onClose, project }) {
             ref={panelRef}
             role="dialog"
             aria-modal="true"
-            aria-label={`${project.title} — ${t("project.dossier.header")}`}
+            aria-label={`${project.title}: ${t("project.dossier.header")}`}
             initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.98 }}
@@ -112,7 +112,7 @@ export default function DossierModal({ open, onClose, project }) {
                 {project.title}
               </h2>
               <p className="mt-4 max-w-xl font-mono text-xs leading-relaxed text-white/55 md:text-sm">
-                {project.summary}
+                {tr(project.summary)}
               </p>
 
               <motion.dl
@@ -128,7 +128,7 @@ export default function DossierModal({ open, onClose, project }) {
                     className="grid grid-cols-[110px_1fr] gap-3 leading-relaxed md:grid-cols-[130px_1fr]"
                   >
                     <dt className="text-red-400/60">{k}</dt>
-                    <dd className="text-white/70">{v}</dd>
+                    <dd className="text-white/70">{tr(v)}</dd>
                   </motion.div>
                 ))}
               </motion.dl>

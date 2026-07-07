@@ -5,7 +5,7 @@ import { fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
 import { SITE } from "../data/site";
 
-const GLYPHS = "!<>-_\\/[]{}—=+*^?#@$%&01";
+const GLYPHS = "!<>-_\\/[]{}=+*^?#@$%&01";
 
 function ScrambleLink({ prefix, label, href }) {
   const [display, setDisplay] = useState(label);
@@ -73,9 +73,9 @@ export default function ContactFooter() {
   const { t } = useI18n();
 
   return (
-    <footer id="contact" className="relative border-t border-gridline scroll-mt-24">
+    <footer id="contact" className="relative z-10 border-t border-gridline scroll-mt-24">
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <SectionHeader index="06" label={t("contact.label")} title={t("contact.title")} />
+        <SectionHeader index="07" label={t("contact.label")} title={t("contact.title")} />
 
         <motion.div
           variants={stagger}
@@ -97,7 +97,7 @@ export default function ContactFooter() {
           </div>
         </motion.div>
 
-        <div className="mt-20 flex flex-col gap-3 border-t border-gridline pt-6 font-mono text-[11px] tracking-[0.15em] text-white/25 md:flex-row md:items-center md:justify-between">
+        <div className="mt-20 flex flex-col gap-3 border-t border-gridline pt-6 font-mono text-[11px] tracking-[0.15em] text-white/50 md:flex-row md:items-center md:justify-between">
           <p>{t("contact.copyright")}</p>
           <p>{t("contact.warning")}</p>
         </div>

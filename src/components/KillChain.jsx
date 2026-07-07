@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import { SPRING, fadeUp, stagger } from "../lib/motion";
@@ -18,14 +18,28 @@ function nodeTone(kind, active) {
 
 export default function KillChain() {
   const shouldReduce = useReducedMotion();
-  const { t } = useI18n();
+  const { t, tr } = useI18n();
   const [selected, setSelected] = useState(0);
   const stage = KILL_CHAIN[selected];
+
+  // Measure the chain width so the packet can travel it with a transform
+  // (x) instead of animating `left` — keeps the loop compositor-only.
+  const trackRef = useRef(null);
+  const [trackW, setTrackW] = useState(0);
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return undefined;
+    const measure = () => setTrackW(el.offsetWidth);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   return (
     <section id="killchain" className="relative border-t border-gridline scroll-mt-24">
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <SectionHeader index="04" label={t("killchain.label")} title={t("killchain.title")} />
+        <SectionHeader index="05" label={t("killchain.label")} title={t("killchain.title")} />
 
         <motion.div
           variants={stagger}
@@ -50,39 +64,60 @@ export default function KillChain() {
           </motion.p>
 
           {/* Desktop: horizontal chain */}
-          <motion.div variants={fadeUp} className="relative mt-14 hidden md:block">
+          <motion.div ref={trackRef} variants={fadeUp} className="relative mt-14 hidden md:block">
             <div className="absolute left-0 right-0 top-5 h-px bg-gridline" />
+            {/* draw-in via scaleX (compositor-only) instead of width (layout) */}
             <motion.div
               aria-hidden="true"
-              className="absolute left-0 top-5 h-px bg-gradient-to-r from-red-500/70 via-amber-400/60 to-neon"
-              initial={shouldReduce ? { width: "100%" } : { width: 0 }}
-              whileInView={{ width: "100%" }}
+              className="absolute left-0 top-5 h-px w-full origin-left bg-gradient-to-r from-red-500/70 via-amber-400/60 to-neon"
+              initial={shouldReduce ? { scaleX: 1 } : { scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1.1, ease: "easeInOut" }}
             />
+            {/* travelling packet — transform-only loop along the measured track */}
+            {!shouldReduce && trackW > 0 && (
+              <motion.span
+                aria-hidden="true"
+                className="absolute left-0 top-5 z-10 -ml-1 -mt-1 h-2 w-2 rounded-full bg-neon [box-shadow:0_0_12px_4px_rgba(16,185,129,0.6)]"
+                initial={{ x: 0 }}
+                animate={{ x: [0, trackW] }}
+                transition={{ duration: 3.4, ease: "linear", repeat: Infinity, repeatDelay: 0.4 }}
+              />
+            )}
             <ol className="relative flex justify-between">
               {KILL_CHAIN.map((s, i) => {
                 const active = i === selected;
                 return (
                   <li key={s.id} className="flex flex-1 flex-col items-center text-center last:flex-none">
-                    <button
-                      type="button"
-                      onClick={() => setSelected(i)}
-                      aria-pressed={active}
-                      aria-label={`${s.label}: ${s.summary}`}
-                      className={`flex h-10 w-10 items-center justify-center rounded-full border font-mono text-xs transition-all duration-300 ${nodeTone(
-                        s.kind,
-                        active
-                      )}`}
-                    >
-                      {s.phase}
-                    </button>
+                    <span className="relative flex h-10 w-10 items-center justify-center">
+                      {active && !shouldReduce && (
+                        <span
+                          aria-hidden="true"
+                          className={`absolute inline-flex h-full w-full animate-ping rounded-full ${
+                            s.kind === "defense" ? "bg-neon/25" : "bg-red-500/25"
+                          }`}
+                        />
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setSelected(i)}
+                        aria-pressed={active}
+                        aria-label={`${tr(s.label)}: ${tr(s.summary)}`}
+                        className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border font-mono text-xs transition-all duration-300 ${nodeTone(
+                          s.kind,
+                          active
+                        )}`}
+                      >
+                        {s.phase}
+                      </button>
+                    </span>
                     <span
                       className={`mt-3 max-w-[7rem] font-mono text-[10px] tracking-[0.15em] transition-colors duration-300 ${
                         active ? "text-white" : "text-white/40"
                       }`}
                     >
-                      {s.label}
+                      {tr(s.label)}
                     </span>
                   </li>
                 );
@@ -119,7 +154,7 @@ export default function KillChain() {
                     }`}
                   >
                     <span className="text-white/30">{s.phase}</span>
-                    {s.label}
+                    {tr(s.label)}
                   </button>
                 </li>
               );
@@ -153,10 +188,10 @@ export default function KillChain() {
                 <span className="text-white/30">PHASE {stage.phase} / 06</span>
               </div>
               <h3 className="mt-4 font-display text-xl font-semibold text-white md:text-2xl">
-                {stage.label}
+                {tr(stage.label)}
               </h3>
               <p className="mt-3 max-w-2xl font-mono text-xs leading-relaxed text-white/60 md:text-sm">
-                {stage.detail}
+                {tr(stage.detail)}
               </p>
             </motion.div>
           </motion.div>

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 const DEFAULT_TITLE = "Anastasios Soumpakis // Security Engineer";
 const DEFAULT_DESC =
-  "Anastasios Soumpakis — Security & Information Systems Engineer. Incident response, system hardening, privacy engineering. University of the Aegean.";
+  "Anastasios Soumpakis: Security & Information Systems Engineer. Incident response, system hardening, privacy engineering. University of the Aegean.";
 
 // Sets document.title and the meta description for a route, restoring the
 // site defaults on unmount so single-page navigation stays consistent.

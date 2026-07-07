@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { SPRING, fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
+import MagneticButton from "./MagneticButton";
 
 // Tones are positional and pair with the boot strings in the dictionary
 // (hero.boot). Keeping them out of i18n means translators only touch copy.
@@ -110,7 +111,7 @@ export default function TerminalHero() {
           <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
           <span className="h-3 w-3 rounded-full bg-[#28c840]" />
           <p className="pointer-events-none absolute inset-x-0 truncate px-20 text-center font-mono text-[11px] text-white/35">
-            anastasios@aegean: ~/secure-session — ssh — 80×24
+            anastasios@aegean: ~/secure-session - ssh - 80×24
           </p>
         </div>
 
@@ -147,18 +148,22 @@ export default function TerminalHero() {
           variants={fadeUp}
           className="flex flex-wrap items-center justify-center gap-4 font-mono text-xs tracking-[0.2em]"
         >
-          <Link
-            to="/#operations"
-            className="border border-neon/40 bg-neon/[0.06] px-6 py-3.5 text-neon transition-all duration-300 hover:bg-neon/15 hover:shadow-glow-sm"
-          >
-            {t("hero.viewOps")}
-          </Link>
-          <Link
-            to="/#contact"
-            className="border border-white/15 px-6 py-3.5 text-white/60 transition-colors duration-300 hover:border-white/40 hover:text-white"
-          >
-            {t("hero.establishContact")}
-          </Link>
+          <MagneticButton>
+            <Link
+              to="/#operations"
+              className="block border border-neon/40 bg-neon/[0.06] px-6 py-3.5 text-neon transition-all duration-200 hover:bg-neon/15 hover:shadow-glow-sm active:scale-[0.97]"
+            >
+              {t("hero.viewOps")}
+            </Link>
+          </MagneticButton>
+          <MagneticButton>
+            <Link
+              to="/#contact"
+              className="block border border-white/15 px-6 py-3.5 text-white/60 transition-[color,border-color,transform] duration-300 hover:border-white/40 hover:text-white active:scale-[0.97] active:duration-100"
+            >
+              {t("hero.establishContact")}
+            </Link>
+          </MagneticButton>
         </motion.div>
         <motion.p
           variants={fadeUp}

@@ -1,9 +1,7 @@
-// Greek dictionary. Strategy: short, unambiguous UI labels (nav, palette
-// chrome, buttons) are translated so the EN/ΕΛ toggle is visibly functional.
-// Everything prose/marketing is left as "TODO_EL: <english>" — these resolve
-// back to en.js until you replace them with your own Greek copy.
-//
-// To find what still needs translating: search this file for "TODO_EL".
+// Greek dictionary — complete mirror of en.js. Register: professional,
+// technical Greek. Security acronyms and CLI/aesthetic tokens (IR, DLP,
+// ISO 27001, TLP:RED, awaiting_input, STATUS: ERADICATED…) stay English
+// by design; they read as terminal output, not prose.
 export const el = {
   nav: {
     doctrine: "ΔΟΓΜΑ",
@@ -14,52 +12,111 @@ export const el = {
   },
   hero: {
     name: "ΑΝΑΣΤΑΣΙΟΣ ΣΟΥΜΠΑΚΗΣ",
-    role: "TODO_EL: Security & Information Systems Engineer",
-    boot: "TODO_EL", // array — falls back to en.hero.boot until translated
+    role: "Μηχανικός Ασφάλειας & Πληροφοριακών Συστημάτων",
+    boot: [
+      "> Εκκίνηση ασφαλούς συνεδρίας...",
+      "> Επαλήθευση διακριτικού ασφαλείας...",
+      "> Πρόσβαση Εγκρίθηκε.",
+      "> Καλώς ήρθατε, Αναστάσιος Σουμπάκης | Μηχανικός Ασφάλειας.",
+    ],
     awaiting: "awaiting_input",
     viewOps: "[ ΕΠΙΧΕΙΡΗΣΕΙΣ ]",
     establishContact: "[ ΕΠΙΚΟΙΝΩΝΙΑ ]",
-    scrollHint: "TODO_EL: SCROLL TO ENUMERATE ▼",
+    scrollHint: "ΚΥΛΙΣΗ ΓΙΑ ΑΠΑΡΙΘΜΗΣΗ ▼",
+  },
+  marquee: {
+    areas: [
+      "Απόκριση Περιστατικών",
+      "Ασφάλεια Δικτύων",
+      "Προηγμένες Δομές Δεδομένων",
+      "Διακριτά Μαθηματικά",
+      "Ιδιωτικότητα εκ Σχεδιασμού",
+    ],
   },
   doctrine: {
     label: "ΕΚΠΑΙΔΕΥΣΗ // ΔΟΓΜΑ",
-    title: "TODO_EL: Built on theory. Deployed against threats.",
-    p1intro: "TODO_EL",
-    p1: "TODO_EL",
-    p2: "TODO_EL",
-    sig: "// doctrine.sig — integrity verified ✓",
-    lines: "TODO_EL", // array — falls back to en.doctrine.lines
+    title: "Χτισμένο στη θεωρία. Αναπτυγμένο απέναντι σε απειλές.",
+    p1intro:
+      "Ενιαίο Δίπλωμα Μεταπτυχιακών Σπουδών (MEng), Μηχανική Πληροφοριακών & Επικοινωνιακών Συστημάτων, Πανεπιστήμιο Αιγαίου.",
+    p1:
+      "Πέντε χρόνια μηχανικού βάθους σε ασφάλεια δικτύων, κρυπτογραφία, προηγμένες δομές δεδομένων και διακριτά μαθηματικά. Όχι ένα σπριντ πιστοποιήσεων: μια πλήρης θεωρία για το πώς αποτυγχάνουν τα συστήματα, και η πειθαρχία να διασφαλίζεται ότι δεν θα αποτύχουν.",
+    p2:
+      "Κάθε ανάθεση, από ζωντανή εξάλειψη κακόβουλου λογισμικού έως εργαλεία συμμόρφωσης, εκτελείται κάτω από ένα ενιαίο, αδιαπραγμάτευτο δόγμα:",
+    sig: "// doctrine.sig : ακεραιότητα επαληθευμένη ✓",
+    lines: ["Πρώτα ανάλυση.", "Έπειτα δράση.", "Τεκμηρίωση των πάντων."],
   },
   experience: {
     label: "ΙΣΤΟΡΙΚΟ // ΑΝΑΘΕΣΕΙΣ",
-    title: "TODO_EL: Engagements & build log.",
-    intro: "TODO_EL",
+    title: "Αναθέσεις & ημερολόγιο έργων.",
+    intro:
+      "Χρονολογικό αρχείο καταγραφής έργων μηχανικής και ασφάλειας: ακαδημαϊκών, εφαρμοσμένων και αυτόνομων. Οι χρονοσημάνσεις και το εύρος είναι προσωρινά· επιβεβαιώστε πριν τη δημοσίευση.",
     present: "ΣΗΜΕΡΑ",
   },
   killchain: {
     label: "ΦΑΚΕΛΟΣ // ΑΛΥΣΙΔΑ ΕΠΙΘΕΣΗΣ",
-    title: "TODO_EL: Anatomy of an eradication.",
-    intro: "TODO_EL",
+    title: "Ανατομία μιας εξάλειψης.",
+    intro:
+      "Ανακατασκευασμένη αλυσίδα επίθεσης από την ανάθεση IR-2506-RUNNER: ένα συγκεκαλυμμένο εμφύτευμα PowerShell, ιχνηλατημένο από την παράδοση έως την αφαίρεση της ρίζας του. Επιλέξτε στάδιο για να αναπτυχθεί η ανάλυση.",
     caseTag: "IR-2506-RUNNER",
     statusTag: "STATUS: ERADICATED",
-    outcome: "TODO_EL",
+    outcome:
+      "Το εμφύτευμα εξαλείφθηκε στη ρίζα του. Μηδέν επανεγκατάσταση. Μηδενική απώλεια δεδομένων. Πλήρης τεκμηρίωση της αλυσίδας επίθεσης.",
     selectHint: "ΕΠΙΛΕΞΤΕ ΣΤΑΔΙΟ ▸",
+  },
+  soc: {
+    label: "ΖΩΝΤΑΝΗ ΕΙΚΟΝΑ // ΚΕΝΤΡΟ ΕΠΙΧΕΙΡΗΣΕΩΝ",
+    title: "Κέντρο επιχειρήσεων ασφαλείας.",
+    intro:
+      "Μια κονσόλα επιχειρήσεων σε πραγματικό χρόνο: ροή απειλών, στάση συστημάτων και τηλεμετρία συνεδρίας, που μεταδίδονται καθώς διαβάζετε. Κάθε ένδειξη βασίζεται σε πραγματική δουλειά· η κίνηση είναι προσομοιωμένη.",
+    threatFeed: "ΡΟΗ ΑΠΕΙΛΩΝ",
+    posture: "ΣΤΑΣΗ ΣΥΣΤΗΜΑΤΩΝ",
+    session: "ΣΥΝΕΔΡΙΑ",
+    traffic: "ΚΙΝΗΣΗ ΔΙΚΤΥΟΥ",
+    map: "ΧΑΡΤΗΣ ΠΕΡΙΜΕΤΡΟΥ",
+    uptimeLabel: "ΔΙΑΘΕΣΙΜΟΤΗΤΑ",
+    integrityLabel: "ΑΚΕΡΑΙΟΤΗΤΑ",
+    nodeLabel: "ΚΟΜΒΟΣ",
+    node: "SAMOS.GR // 37.79°N",
+    online: "ΣΕ ΛΕΙΤΟΥΡΓΙΑ",
+    feed: [
+      "Σάρωση Autoruns ολοκληρώθηκε : 0 ανωμαλίες",
+      "Σάρωση DLP σε ουρά : αποθετήριο /shared",
+      "Αντιστοίχιση controls ISO 27001 ανανεώθηκε",
+      "TLS handshake επιβεβαιώθηκε : AES-256-GCM",
+      "Diff χάρτη επιμονής : κανένα νέο key",
+      "Καταγραφή πακέτων αρχειοθετήθηκε : υπόθεση IR-2506",
+      "Κατάσταση endpoint : ΘΩΡΑΚΙΣΜΕΝΗ",
+      "Συγχρονισμός threat feed : φυσιολογικός",
+    ],
+    gauges: [
+      ["ΤΕΡΜΑΤΙΚΑ", 96],
+      ["ΔΙΚΤΥΟ", 91],
+      ["ΕΓΓΡΑΦΑ", 88],
+      ["ΣΥΜΜΟΡΦΩΣΗ", 94],
+    ],
   },
   operations: {
     label: "ΕΠΙΧΕΙΡΗΣΕΙΣ // ΦΑΚΕΛΟΙ",
-    title: "TODO_EL: Field-proven operations.",
+    title: "Επιχειρήσεις δοκιμασμένες στο πεδίο.",
     openDossier: "ΑΝΟΙΓΜΑ ΦΑΚΕΛΟΥ",
     viewSource: "ΠΗΓΑΙΟΣ ΚΩΔΙΚΑΣ",
     flagshipEyebrow: "ΝΑΥΑΡΧΙΔΑ",
     telemetryTitle: "ΖΩΝΤΑΝΗ ΤΗΛΕΜΕΤΡΙΑ",
-    telemetry: "TODO_EL", // array of rows — falls back to en.operations.telemetry
+    telemetry: [
+      ["STATUS", "ΕΠΙΧΕΙΡΗΣΙΑΚΟ", true],
+      ["THREAT_FEED", "ΕΝΕΡΓΗ", false],
+      ["LAST_INCIDENT", "ΕΚΛΕΙΣΕ // ΕΞΑΛΕΙΦΘΗΚΕ", false],
+      ["POSTURE", "ΘΩΡΑΚΙΣΜΕΝΗ", false],
+      ["COVERAGE", "ENDPOINT + NET + DOCS", false],
+    ],
   },
   contact: {
     label: "ΚΡΥΠΤΟΓΡΑΦΗΜΕΝΟ ΚΑΝΑΛΙ",
-    title: "TODO_EL: Establish Secure Connection.",
-    intro: "TODO_EL",
+    title: "Δημιουργία ασφαλούς σύνδεσης.",
+    intro:
+      "Η χειραψία ολοκληρώθηκε. Η ακεραιότητα του καναλιού επαληθεύτηκε. Είτε πρόκειται για περιστατικό που χρειάζεται απαντήσεις είτε για σύστημα που χρειάζεται θωράκιση, οι μεταδόσεις καταλήγουν εδώ.",
     copyright: "© 2026 ΑΝΑΣΤΑΣΙΟΣ ΣΟΥΜΠΑΚΗΣ // ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΙΓΑΙΟΥ",
-    warning: "TODO_EL: ALL SESSIONS LOGGED. UNAUTHORIZED ACCESS WILL BE TRACED.",
+    warning: "ΟΛΕΣ ΟΙ ΣΥΝΕΔΡΙΕΣ ΚΑΤΑΓΡΑΦΟΝΤΑΙ. ΚΑΘΕ ΜΗ ΕΞΟΥΣΙΟΔΟΤΗΜΕΝΗ ΠΡΟΣΒΑΣΗ ΘΑ ΕΝΤΟΠΙΣΤΕΙ.",
   },
   palette: {
     placeholder: "Πληκτρολογήστε εντολή ή αναζήτηση…",
@@ -71,24 +128,25 @@ export const el = {
       actions: "ΕΝΕΡΓΕΙΕΣ",
     },
     actions: {
-      home: "TODO_EL: Go to home",
-      doctrine: "TODO_EL: Go to doctrine",
-      experience: "TODO_EL: Go to experience",
-      killchain: "TODO_EL: Go to kill chain",
-      operations: "TODO_EL: Go to operations",
-      contact: "TODO_EL: Go to contact",
-      copyEmail: "TODO_EL: Copy email address",
+      home: "Μετάβαση στην αρχική",
+      doctrine: "Μετάβαση στο δόγμα",
+      experience: "Μετάβαση στην εμπειρία",
+      commandcenter: "Μετάβαση στο κέντρο επιχειρήσεων",
+      killchain: "Μετάβαση στην αλυσίδα επίθεσης",
+      operations: "Μετάβαση στις επιχειρήσεις",
+      contact: "Μετάβαση στην επικοινωνία",
+      copyEmail: "Αντιγραφή διεύθυνσης email",
       copiedEmail: "Αντιγράφηκε ✓",
-      github: "TODO_EL: Open GitHub profile",
-      linkedin: "TODO_EL: Open LinkedIn profile",
-      toggleLang: "TODO_EL: Toggle language (EN / ΕΛ)",
+      github: "Άνοιγμα προφίλ GitHub",
+      linkedin: "Άνοιγμα προφίλ LinkedIn",
+      toggleLang: "Εναλλαγή γλώσσας (EN / ΕΛ)",
     },
   },
   project: {
     back: "← ΠΙΣΩ ΣΤΙΣ ΕΠΙΧΕΙΡΗΣΕΙΣ",
     openCaseFile: "[ ΑΝΟΙΓΜΑ ΦΑΚΕΛΟΥ ]",
     viewOnGithub: "ΠΡΟΒΟΛΗ ΣΤΟ GITHUB ↗",
-    notFound: "TODO_EL: Case file not found.",
+    notFound: "Ο φάκελος υπόθεσης δεν βρέθηκε.",
     sections: {
       overview: "ΕΠΙΣΚΟΠΗΣΗ",
       architecture: "ΑΡΧΙΤΕΚΤΟΝΙΚΗ",
@@ -99,7 +157,7 @@ export const el = {
       header: "ΑΠΟΡΡΗΤΟΣ ΦΑΚΕΛΟΣ",
       declassified: "ΑΠΟΧΑΡΑΚΤΗΡΙΣΜΕΝΟ ΓΙΑ ΕΠΙΣΚΟΠΗΣΗ",
       close: "ΚΛΕΙΣΙΜΟ ✕",
-      footer: "TODO_EL: END OF FILE // HANDLING: TLP:CLEAR ON PUBLICATION",
+      footer: "ΤΕΛΟΣ ΑΡΧΕΙΟΥ // ΔΙΑΒΑΘΜΙΣΗ: TLP:CLEAR ΚΑΤΑ ΤΗ ΔΗΜΟΣΙΕΥΣΗ",
     },
   },
 };
