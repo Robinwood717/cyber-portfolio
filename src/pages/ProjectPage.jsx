@@ -42,7 +42,7 @@ export default function ProjectPage() {
     <div className="mx-auto max-w-3xl px-6 pb-28 pt-28 md:pt-32">
       <Link
         to="/#operations"
-        className="inline-flex items-center font-mono text-[11px] tracking-[0.25em] text-white/40 transition-colors duration-300 hover:text-neon"
+        className="inline-flex min-h-[44px] items-center font-mono text-[11px] tracking-[0.25em] text-white/55 transition-colors duration-300 hover:text-neon"
       >
         {t("project.back")}
       </Link>

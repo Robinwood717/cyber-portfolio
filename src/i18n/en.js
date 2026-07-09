@@ -8,6 +8,8 @@ export const en = {
     operations: "OPERATIONS",
     connect: "CONNECT",
     search: "SEARCH",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
   },
   hero: {
     name: "ANASTASIOS SOUMPAKIS",

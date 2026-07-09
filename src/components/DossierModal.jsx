@@ -93,7 +93,7 @@ export default function DossierModal({ open, onClose, project }) {
                 ref={closeRef}
                 type="button"
                 onClick={onClose}
-                className="rounded border border-white/15 px-2.5 py-1 font-mono text-[10px] tracking-[0.2em] text-white/50 transition-colors duration-200 hover:border-neon/50 hover:text-neon"
+                className="inline-flex min-h-[44px] items-center rounded border border-white/15 px-2.5 py-1 font-mono text-[10px] tracking-[0.2em] text-white/50 transition-colors duration-200 hover:border-neon/50 hover:text-neon"
               >
                 {t("project.dossier.close")}
               </button>

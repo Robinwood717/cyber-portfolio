@@ -9,6 +9,8 @@ export const el = {
     operations: "ΕΠΙΧΕΙΡΗΣΕΙΣ",
     connect: "ΣΥΝΔΕΣΗ",
     search: "ΑΝΑΖΗΤΗΣΗ",
+    openMenu: "Άνοιγμα μενού",
+    closeMenu: "Κλείσιμο μενού",
   },
   hero: {
     name: "ΑΝΑΣΤΑΣΙΟΣ ΣΟΥΜΠΑΚΗΣ",

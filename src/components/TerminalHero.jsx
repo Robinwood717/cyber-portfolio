@@ -63,7 +63,7 @@ export default function TerminalHero() {
   const shouldReduce = useReducedMotion();
 
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-28">
+    <section className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-28">
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-grid-lines bg-[length:56px_56px] [-webkit-mask-image:radial-gradient(ellipse_at_center,black_25%,transparent_72%)] [mask-image:radial-gradient(ellipse_at_center,black_25%,transparent_72%)]"

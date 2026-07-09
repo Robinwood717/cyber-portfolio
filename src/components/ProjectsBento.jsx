@@ -85,7 +85,7 @@ function FlagshipCard({ project, index, t, tr }) {
       <div className="mt-7 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.2em]">
         <Link
           to={`/ops/${project.slug}`}
-          className="flex items-center gap-2 border border-neon/40 bg-neon/[0.06] px-4 py-2.5 text-neon transition-all duration-200 hover:bg-neon/15 hover:shadow-glow-sm active:scale-[0.97]"
+          className="flex min-h-[44px] items-center gap-2 border border-neon/40 bg-neon/[0.06] px-4 py-2.5 text-neon transition-all duration-200 hover:bg-neon/15 hover:shadow-glow-sm active:scale-[0.97]"
         >
           {t("operations.openDossier")} <span aria-hidden="true">→</span>
         </Link>
@@ -93,7 +93,7 @@ function FlagshipCard({ project, index, t, tr }) {
           href={project.repo}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-2 border border-white/15 px-4 py-2.5 text-white/55 transition-[color,border-color,transform] duration-300 hover:border-white/40 hover:text-white active:scale-[0.97] active:duration-100"
+          className="flex min-h-[44px] items-center gap-2 border border-white/15 px-4 py-2.5 text-white/55 transition-[color,border-color,transform] duration-300 hover:border-white/40 hover:text-white active:scale-[0.97] active:duration-100"
         >
           {t("operations.viewSource")} <span aria-hidden="true">↗</span>
         </a>
@@ -121,7 +121,7 @@ function RepoCard({ project, index, t, tr }) {
         href={project.repo}
         target="_blank"
         rel="noreferrer"
-        className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-white/45 transition-colors duration-300 hover:text-neon"
+        className="mt-4 inline-flex min-h-[44px] items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-white/55 transition-colors duration-300 hover:text-neon"
       >
         {t("operations.viewSource")} <span aria-hidden="true">↗</span>
       </a>
