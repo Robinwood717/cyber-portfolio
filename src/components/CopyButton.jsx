@@ -6,7 +6,7 @@ import { useI18n } from "../i18n/LanguageContext";
 // idle -> copied (neon, 2s) -> idle, or the fallback state when the
 // clipboard API is unavailable, in which case the visible text is
 // programmatically selected so a manual Ctrl-C still works.
-export default function CopyButton({ value, ariaLabel, selectTargetRef }) {
+export default function CopyButton({ value, ariaLabel, selectTargetRef, compact = false }) {
   const { t } = useI18n();
   const [state, setState] = useState("idle");
   const timer = useRef(null);
@@ -52,7 +52,11 @@ export default function CopyButton({ value, ariaLabel, selectTargetRef }) {
         type="button"
         onClick={copy}
         aria-label={ariaLabel}
-        className={`min-h-11 shrink-0 border px-3 font-mono text-[10px] tracking-[0.2em] transition-all duration-200 active:scale-[0.97] active:duration-100 ${tone}`}
+        className={`shrink-0 border font-mono tracking-[0.2em] transition-all duration-200 active:scale-[0.97] active:duration-100 ${
+          compact
+            ? "min-h-11 px-2 text-[9px] sm:min-h-0 sm:py-0.5"
+            : "min-h-11 px-3 text-[10px]"
+        } ${tone}`}
       >
         [ {state === "copied" ? t("contact.copy.copied") : state === "fallback" ? t("contact.copy.fallback") : t("contact.copy.copy")} ]
       </button>

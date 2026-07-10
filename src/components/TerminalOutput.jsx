@@ -1,6 +1,8 @@
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import { useI18n } from "../i18n/LanguageContext";
 import LogoMark from "./LogoMark";
+import CopyButton from "./CopyButton";
 
 // Renders the descriptor objects produced by lib/terminalCommands.js as
 // React nodes. Everything is built from React elements and plain strings —
@@ -198,25 +200,44 @@ function Experience({ d, seq, instant, resolve }) {
   ));
 }
 
+const CONTACT_COPY_ARIA = {
+  EMAIL: "contact.copy.copyEmail",
+  GITHUB: "contact.copy.copyGithub",
+  LINKEDIN: "contact.copy.copyLinkedin",
+};
+
+// One contact row: link plus a compact [ COPY ] chip copying the visible
+// value (same rule as the footer: what you see is what you paste).
+function ContactLine({ link, seq, instant, t }) {
+  const valueRef = useRef(null);
+  return (
+    <Reveal seq={seq} instant={instant} className="grid grid-cols-[7.5rem_1fr] gap-x-3">
+      <span className="text-white/35 tracking-wider">{link.label}</span>
+      <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <a
+          ref={valueRef}
+          href={link.href}
+          {...(link.external ? { target: "_blank", rel: "noreferrer" } : {})}
+          className="inline-flex min-h-11 items-center break-all text-white/85 underline-offset-4 hover:text-neon hover:underline sm:min-h-0"
+        >
+          {link.value}
+        </a>
+        <CopyButton
+          compact
+          value={link.value}
+          ariaLabel={t(CONTACT_COPY_ARIA[link.label] ?? "contact.copy.copy")}
+          selectTargetRef={valueRef}
+        />
+      </span>
+    </Reveal>
+  );
+}
+
 function Contact({ d, seq, instant, t }) {
   return (
     <>
       {d.links.map((link) => (
-        <Reveal
-          key={link.label}
-          seq={seq}
-          instant={instant}
-          className="grid grid-cols-[7.5rem_1fr] gap-x-3"
-        >
-          <span className="text-white/35 tracking-wider">{link.label}</span>
-          <a
-            href={link.href}
-            {...(link.external ? { target: "_blank", rel: "noreferrer" } : {})}
-            className="inline-flex min-h-11 items-center break-all text-white/85 underline-offset-4 hover:text-neon hover:underline sm:min-h-0"
-          >
-            {link.value}
-          </a>
-        </Reveal>
+        <ContactLine key={link.label} link={link} seq={seq} instant={instant} t={t} />
       ))}
       <Reveal seq={seq} instant={instant}>
         <p className="text-white/50">{t(d.outroKey)}</p>
