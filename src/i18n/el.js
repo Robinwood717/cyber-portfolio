@@ -141,6 +141,18 @@ export const el = {
       ["ΕΓΓΡΑΦΑ", 88],
       ["ΣΥΜΜΟΡΦΩΣΗ", 94],
     ],
+    github: {
+      label: "GITHUB UPLINK",
+      pushedPrefix: "push",
+      justNow: "μόλις τώρα",
+      standby: "αναμονή σύνδεσης",
+      languages: "ΓΛΩΣΣΕΣ",
+      lastSync: "ΤΕΛ. ΣΥΓΧΡ.",
+      sourceNote: "πηγή: api.github.com",
+      fallbackNote: "σύνδεση εκτός: δεδομένα μανιφέστου",
+      units: { minute: "λ", hour: "ω", day: "ημ", month: "μ", year: "ε" },
+      agoSuffix: "πριν",
+    },
   },
   operations: {
     label: "ΕΠΙΧΕΙΡΗΣΕΙΣ // ΦΑΚΕΛΟΙ",

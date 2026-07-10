@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
+import GithubUplink from "./GithubUplink";
 import { fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
 
@@ -257,7 +258,10 @@ export default function CommandCenter() {
           <Panel label={t("soc.session")}>
             <SessionPanel t={t} frozen={frozen} />
           </Panel>
-          <Panel label={t("soc.traffic")}>
+          <Panel label={t("soc.github.label")} className="md:col-span-2">
+            <GithubUplink frozen={frozen} />
+          </Panel>
+          <Panel label={t("soc.traffic")} className="lg:col-span-2">
             <TrafficSparkline frozen={frozen} />
           </Panel>
           <Panel label={t("soc.map")}>

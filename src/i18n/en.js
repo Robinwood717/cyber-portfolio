@@ -140,6 +140,18 @@ export const en = {
       ["DOCUMENTS", 88],
       ["COMPLIANCE", 94],
     ],
+    github: {
+      label: "GITHUB UPLINK",
+      pushedPrefix: "pushed",
+      justNow: "just now",
+      standby: "awaiting uplink",
+      languages: "LANGUAGES",
+      lastSync: "LAST SYNC",
+      sourceNote: "source: api.github.com",
+      fallbackNote: "uplink offline: manifest data",
+      units: { minute: "m", hour: "h", day: "d", month: "mo", year: "y" },
+      agoSuffix: "ago",
+    },
   },
   operations: {
     label: "OPERATIONS // CASE FILES",
