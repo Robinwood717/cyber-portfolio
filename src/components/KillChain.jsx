@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import { SPRING, fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
@@ -41,33 +41,33 @@ export default function KillChain() {
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
         <SectionHeader index="06" label={t("killchain.label")} title={t("killchain.title")} />
 
-        <motion.div
+        <m.div
           variants={stagger}
           initial={shouldReduce ? false : "hidden"}
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
         >
-          <motion.div variants={fadeUp} className="mt-6 flex flex-wrap items-center gap-2 font-mono text-[10px] tracking-[0.2em]">
-            <span className="rounded border border-white/10 px-2 py-1 text-white/40">
+          <m.div variants={fadeUp} className="mt-6 flex flex-wrap items-center gap-2 font-mono text-[10px] tracking-[0.2em]">
+            <span className="rounded border border-white/10 px-2 py-1 text-white/55">
               {t("killchain.caseTag")}
             </span>
             <span className="rounded border border-neon/40 bg-neon/10 px-2 py-1 text-neon">
               {t("killchain.statusTag")}
             </span>
-          </motion.div>
+          </m.div>
 
-          <motion.p
+          <m.p
             variants={fadeUp}
             className="mt-6 max-w-2xl font-mono text-sm leading-relaxed text-white/50"
           >
             {t("killchain.intro")}
-          </motion.p>
+          </m.p>
 
           {/* Desktop: horizontal chain */}
-          <motion.div ref={trackRef} variants={fadeUp} className="relative mt-14 hidden md:block">
+          <m.div ref={trackRef} variants={fadeUp} className="relative mt-14 hidden md:block">
             <div className="absolute left-0 right-0 top-5 h-px bg-gridline" />
             {/* draw-in via scaleX (compositor-only) instead of width (layout) */}
-            <motion.div
+            <m.div
               aria-hidden="true"
               className="absolute left-0 top-5 h-px w-full origin-left bg-gradient-to-r from-red-500/70 via-amber-400/60 to-neon"
               initial={shouldReduce ? { scaleX: 1 } : { scaleX: 0 }}
@@ -77,7 +77,7 @@ export default function KillChain() {
             />
             {/* travelling packet — transform-only loop along the measured track */}
             {!shouldReduce && trackW > 0 && (
-              <motion.span
+              <m.span
                 aria-hidden="true"
                 className="absolute left-0 top-5 z-10 -ml-1 -mt-1 h-2 w-2 rounded-full bg-neon [box-shadow:0_0_12px_4px_rgba(16,185,129,0.6)]"
                 initial={{ x: 0 }}
@@ -114,7 +114,7 @@ export default function KillChain() {
                     </span>
                     <span
                       className={`mt-3 max-w-[7rem] font-mono text-[10px] tracking-[0.15em] transition-colors duration-300 ${
-                        active ? "text-white" : "text-white/40"
+                        active ? "text-white" : "text-white/55"
                       }`}
                     >
                       {tr(s.label)}
@@ -123,10 +123,10 @@ export default function KillChain() {
                 );
               })}
             </ol>
-          </motion.div>
+          </m.div>
 
           {/* Mobile: vertical chain */}
-          <motion.ol
+          <m.ol
             variants={fadeUp}
             className="relative mt-12 space-y-3 border-l border-gridline pl-6 md:hidden"
           >
@@ -153,23 +153,23 @@ export default function KillChain() {
                         : "border-white/10 text-white/50"
                     }`}
                   >
-                    <span className="text-white/30">{s.phase}</span>
+                    <span className="text-white/50">{s.phase}</span>
                     {tr(s.label)}
                   </button>
                 </li>
               );
             })}
-          </motion.ol>
+          </m.ol>
 
           {/* Shared detail panel */}
-          <motion.div
+          <m.div
             variants={fadeUp}
             className="relative mt-10 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)] md:p-8"
           >
             {/* Keyed on stage id → React remounts on selection, replaying the
                 enter transition. Avoids AnimatePresence exit-lock inside this
                 variant-driven parent. */}
-            <motion.div
+            <m.div
               key={stage.id}
               initial={shouldReduce ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -185,7 +185,7 @@ export default function KillChain() {
                 >
                   {stage.kind === "defense" ? "RESPONSE" : "ADVERSARY"}
                 </span>
-                <span className="text-white/30">PHASE {stage.phase} / 06</span>
+                <span className="text-white/50">PHASE {stage.phase} / 06</span>
               </div>
               <h3 className="mt-4 font-display text-xl font-semibold text-white md:text-2xl">
                 {tr(stage.label)}
@@ -193,16 +193,16 @@ export default function KillChain() {
               <p className="mt-3 max-w-2xl font-mono text-xs leading-relaxed text-white/60 md:text-sm">
                 {tr(stage.detail)}
               </p>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
 
-          <motion.p
+          <m.p
             variants={fadeUp}
             className="mt-6 max-w-2xl font-mono text-xs leading-relaxed text-neon/90"
           >
             {t("killchain.outcome")}
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
       </div>
     </section>
   );

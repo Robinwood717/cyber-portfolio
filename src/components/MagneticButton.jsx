@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
+import { m, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 
 // Wraps a CTA so it drifts toward the cursor while hovered, springing back on
 // leave. Renders an inline-block motion wrapper — put a Link/button inside.
@@ -24,7 +24,7 @@ export default function MagneticButton({ children, className = "", strength = 0.
   };
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={reset}
@@ -32,6 +32,6 @@ export default function MagneticButton({ children, className = "", strength = 0.
       className={`inline-block ${className}`}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

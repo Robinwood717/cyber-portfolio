@@ -60,8 +60,8 @@ Scanlines/vignette sit on top of the full-screen mobile nav and compound the F7 
 
 ## Band B — UI/UX & accessibility (critical/high)
 
-### [ ] F7 — Systemic sub-AA text contrast (`text-white/40` and below on `#050505`)
-*(In progress: TerminalHero spots raised; site-wide sweep still pending.)*
+### [x] F7 — Systemic sub-AA text contrast (`text-white/40` and below on `#050505`)
+*(Done: site-wide sweep — informational text floor raised to `/45`–`/55`; aria-hidden decorative glyphs left as-is.)*
 **Severity:** Critical (WCAG 1.4.3) · **Source:** ui-ux, seo-a11y
 **Files (representative):** `TerminalHero.jsx`, `ContactFooter.jsx:52,64`, `TerminalOutput.jsx` (~9 spots), `KillChain.jsx`, `GithubUplink.jsx:122-141`, `CommandCenter.jsx:80,98`, `Methodology.jsx:42,46`, `ProjectsBento.jsx:18,36`, `Navbar.jsx:73`, `MobileNav.jsx:126`, `Experience.jsx:60`, `DossierModal.jsx:136`, `CommandPalette.jsx:184,204`
 `white/40` ≈ 3.7:1, lower opacities worse — used on real informational text (labels, timestamps, hints, descriptions) at 9–13px.
@@ -88,7 +88,8 @@ Tab escapes the open dialog into obscured page content.
 Character-by-character mutations inside a live region → stream of partial-word announcements on the site's flagship feature.
 **Fix:** Keep in-progress lines `aria-hidden`; push each line into the live region only when complete (or announce the finished boot text once).
 
-### [ ] F11 — No `<noscript>` fallback: JS failure = blank black page
+### [x] F11 — No `<noscript>` fallback: JS failure = blank black page
+*(Done: noscript block with name, role, and contact links. Prerendering (F14) additionally means full page content exists without JS.)*
 **Severity:** High · **Source:** ui-ux
 **Files:** `index.html:88-90`
 **Fix:** Minimal `<noscript>` block with name, role, email link.
@@ -111,18 +112,21 @@ Operations (actual case studies) comes 7th of 8 sections; on mobile the decorati
 
 ## Band C — Performance top-3
 
-### [ ] F14 — No prerendering: LCP text and per-route meta are 100% client-rendered
+### [x] F14 — No prerendering: LCP text and per-route meta are 100% client-rendered
+*(Done: `src/entry-server.jsx` + `scripts/prerender.mjs` render `/` and both `/ops/*` routes to static HTML at build time with route-specific title/description/og; `main.jsx` hydrates. Canonical URLs still blocked on domain (F3).)*
 **Severity:** Critical (perf + SEO) · **Source:** perf (#1), seo-a11y (#1)
 **Files:** `index.html:89`, `src/main.jsx`, `vite.config.js`, `package.json` build script, `src/hooks/useDocumentMeta.js`, `src/App.jsx:66-70`
 Hero `<h1>` (likely LCP) paints only after the full 400 kB bundle executes (~1–2s extra mobile LCP). Same root cause breaks per-route social previews/search snippets: `/ops/*` pages present identical title/description/image to non-JS crawlers (LinkedIn, Discord, Slack).
 **Fix:** Build-time prerender of `/` and `/ops/:slug` (react-dom/server script rendering each route into `dist/*.html` with route-specific title/description/og/canonical) + `hydrateRoot`. Stopgap: extend `useDocumentMeta` to update og/twitter tags client-side.
 
-### [ ] F15 — Framer Motion is ~31% of gzipped JS (~41 kB) loaded eagerly
+### [x] F15 — Framer Motion is ~31% of gzipped JS (~41 kB) loaded eagerly
+*(Done: `LazyMotion strict` + `m` components everywhere; `domAnimation` loads as a 10.8 kB gzip async chunk.)*
 **Severity:** High · **Source:** perf (#2, measured)
 **Files:** `src/main.jsx:4,15`, `src/lib/motion.js`, ~12 components using full `motion`
 **Fix:** `LazyMotion` + `m` with `domAnimation` loaded lazily (~6 kB sync cost); replace marquee (`SkillsMarquee.jsx:31-38`) and simple scroll-reveals with CSS. Est. 20–35 kB gzip off the critical path.
 
-### [ ] F16 — No code-splitting: one 400 kB / 131 kB-gzip chunk for everything
+### [x] F16 — No code-splitting: one 400 kB / 131 kB-gzip chunk for everything
+*(Done: vendor chunk (53.0 kB gz) split from app (55.4 kB gz); CommandPalette, DossierModal, and motion features load lazily. Critical path: 131 kB → ~110 kB gz, plus prerendered HTML paints before any JS.)*
 **Severity:** High · **Source:** perf (#3), code-quality (#9)
 **Files:** `src/App.jsx:8-11,66-73`, `src/pages/ProjectPage.jsx:8`, `vite.config.js`
 ProjectPage, DossierModal, CommandPalette all gate homepage first paint; no vendor chunk separation → every deploy invalidates all caching.
@@ -132,7 +136,8 @@ ProjectPage, DossierModal, CommandPalette all gate homepage first paint; no vend
 
 ## Band D — SEO & accessibility (remaining)
 
-### [ ] F17 — No sitemap.xml; robots.txt Sitemap directive commented out
+### [-] F17 — No sitemap.xml; robots.txt Sitemap directive commented out
+*(Blocked: sitemap URLs must be absolute — needs owner's domain choice, same as F3.)*
 **Severity:** High · **Source:** seo-a11y
 **Files:** `public/robots.txt:4-5`, missing `public/sitemap.xml`
 **Fix:** Static sitemap listing `/`, `/ops/dlp-scanner`, `/ops/mitm-lab`; uncomment Sitemap line. *Partially blocked on domain.*

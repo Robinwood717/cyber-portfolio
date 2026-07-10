@@ -32,7 +32,7 @@ function Badge({ status, gh }) {
   const styles = {
     live: "border-neon/40 text-neon",
     fallback: "border-[#febc2e]/50 text-[#febc2e]",
-    loading: "border-white/20 text-white/40 animate-pulse",
+    loading: "border-white/20 text-white/55 animate-pulse",
   };
   const text = { live: "LIVE", fallback: "SIM", loading: "SYNC" }[status];
   return (
@@ -119,8 +119,8 @@ export default function GithubUplink({ frozen }) {
 
       <div className="mt-4">
         <div className="flex items-baseline justify-between text-[10px] tracking-[0.2em]">
-          <span className="text-white/40">{gh.languages}</span>
-          <span className="text-white/40">
+          <span className="text-white/55">{gh.languages}</span>
+          <span className="text-white/55">
             {status === "loading"
               ? "…"
               : langs.map(([name, n]) => `${name} ×${n}`).join(" · ")}
@@ -138,7 +138,7 @@ export default function GithubUplink({ frozen }) {
         </div>
       </div>
 
-      <div className="mt-3 flex items-baseline justify-between gap-3 text-[10px] tracking-[0.15em] text-white/35">
+      <div className="mt-3 flex items-baseline justify-between gap-3 text-[10px] tracking-[0.15em] text-white/50">
         <a
           href={SITE.github}
           target="_blank"

@@ -44,7 +44,7 @@ export default function MobileNav({ open, onClose, onOpenPalette }) {
       <div className="flex h-16 items-center justify-between px-4">
         <span className="font-mono text-xs text-white/50">
           soumpakis<span className="text-neon">@sec</span>
-          <span className="text-white/40">:~$</span>
+          <span className="text-white/55">:~$</span>
         </span>
         <button
           ref={closeRef}

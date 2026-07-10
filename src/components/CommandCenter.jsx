@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import GithubUplink from "./GithubUplink";
 import { fadeUp, stagger } from "../lib/motion";
@@ -21,14 +21,14 @@ function formatUptime(ms) {
   const total = Math.floor(ms / 1000);
   const d = Math.floor(total / 86400);
   const h = Math.floor((total % 86400) / 3600);
-  const m = Math.floor((total % 3600) / 60);
+  const mins = Math.floor((total % 3600) / 60);
   const s = total % 60;
-  return `${d}D ${pad(h)}:${pad(m)}:${pad(s)}`;
+  return `${d}D ${pad(h)}:${pad(mins)}:${pad(s)}`;
 }
 
 function Panel({ label, live = true, className = "", children }) {
   return (
-    <motion.article
+    <m.article
       variants={fadeUp}
       style={{
         WebkitBackfaceVisibility: "hidden",
@@ -46,7 +46,7 @@ function Panel({ label, live = true, className = "", children }) {
         <p className="font-mono text-[10px] tracking-[0.3em] text-neon">{label}</p>
       </div>
       <div className="mt-5">{children}</div>
-    </motion.article>
+    </m.article>
   );
 }
 
@@ -73,16 +73,16 @@ function ThreatFeed({ lines, frozen }) {
   return (
     <div role="log" aria-live="off" className="space-y-2 font-mono text-[11px] leading-relaxed md:text-xs">
       {entries.map((entry, i) => (
-        <motion.p
+        <m.p
           key={entry.key}
           initial={frozen || i > 0 ? false : { opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
-          className={`flex gap-3 border-b border-white/5 pb-1.5 ${i === 0 ? "text-white/80" : "text-white/40"}`}
+          className={`flex gap-3 border-b border-white/5 pb-1.5 ${i === 0 ? "text-white/80" : "text-white/55"}`}
         >
           <span className="shrink-0 text-neon/60">{formatClock(entry.at)}</span>
           <span className="shrink-0 text-white/25">▸</span>
           <span className="truncate">{entry.text}</span>
-        </motion.p>
+        </m.p>
       ))}
     </div>
   );
@@ -95,12 +95,12 @@ function PostureGauges({ gauges, frozen }) {
       {gauges.map(([label, value]) => (
         <div key={label}>
           <div className="flex items-baseline justify-between font-mono text-[10px] tracking-[0.2em]">
-            <span className="text-white/40">{label}</span>
+            <span className="text-white/55">{label}</span>
             <span className="text-neon">{value}%</span>
           </div>
           <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/5">
             {/* fill via scaleX (compositor-only) rather than width (layout) */}
-            <motion.div
+            <m.div
               initial={frozen ? { scaleX: value / 100 } : { scaleX: 0 }}
               whileInView={{ scaleX: value / 100 }}
               viewport={{ once: true }}
@@ -232,7 +232,7 @@ export default function CommandCenter() {
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
         <SectionHeader index="05" label={t("soc.label")} title={t("soc.title")} />
 
-        <motion.p
+        <m.p
           initial={shouldReduce ? false : { opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -240,9 +240,9 @@ export default function CommandCenter() {
           className="mt-6 max-w-xl font-mono text-sm leading-relaxed text-white/50"
         >
           {t("soc.intro")}
-        </motion.p>
+        </m.p>
 
-        <motion.div
+        <m.div
           variants={stagger}
           initial={shouldReduce ? false : "hidden"}
           whileInView="visible"
@@ -267,7 +267,7 @@ export default function CommandCenter() {
           <Panel label={t("soc.map")}>
             <PerimeterMap t={t} frozen={frozen} />
           </Panel>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

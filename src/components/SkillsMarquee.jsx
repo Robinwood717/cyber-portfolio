@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useI18n } from "../i18n/LanguageContext";
 
 function MarqueeRun({ areas, hidden = false }) {
@@ -28,14 +28,14 @@ export default function SkillsMarquee() {
       aria-label="Focus areas"
       className="relative overflow-hidden border-y border-gridline bg-white/[0.015] py-5"
     >
-      <motion.div
+      <m.div
         className="flex w-max"
         animate={{ x: ["0%", "-50%"] }}
         transition={{ ease: "linear", duration: 30, repeat: Infinity }}
       >
         <MarqueeRun areas={areas} />
         <MarqueeRun areas={areas} hidden />
-      </motion.div>
+      </m.div>
       <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-void to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-void to-transparent" />
     </section>

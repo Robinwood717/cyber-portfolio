@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import CopyButton from "./CopyButton";
 import { fadeUp, stagger } from "../lib/motion";
@@ -49,7 +49,7 @@ function ScrambleLink({ prefix, label, href, valueRef }) {
       onFocus={scramble}
       className="group flex w-fit flex-wrap items-baseline gap-x-5 gap-y-1 py-1"
     >
-      <span className="w-24 font-mono text-[10px] tracking-[0.35em] text-white/30 transition-colors duration-300 group-hover:text-neon">
+      <span className="w-24 font-mono text-[10px] tracking-[0.35em] text-white/50 transition-colors duration-300 group-hover:text-neon">
         {prefix}
       </span>
       <span
@@ -75,7 +75,7 @@ function ContactRow({ prefix, label, href, copyAriaKey }) {
   const { t } = useI18n();
   const valueRef = useRef(null);
   return (
-    <motion.div
+    <m.div
       variants={fadeUp}
       className="flex flex-wrap items-center gap-x-4 gap-y-2"
     >
@@ -85,7 +85,7 @@ function ContactRow({ prefix, label, href, copyAriaKey }) {
         ariaLabel={t(copyAriaKey)}
         selectTargetRef={valueRef}
       />
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -98,18 +98,18 @@ export default function ContactFooter() {
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
         <SectionHeader index="07" label={t("contact.label")} title={t("contact.title")} />
 
-        <motion.div
+        <m.div
           variants={stagger}
           initial={shouldReduce ? false : "hidden"}
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
         >
-          <motion.p
+          <m.p
             variants={fadeUp}
             className="mt-6 max-w-xl font-mono text-sm leading-relaxed text-white/50"
           >
             {t("contact.intro")}
-          </motion.p>
+          </m.p>
 
           <div className="mt-14 flex flex-col gap-6">
             <ContactRow
@@ -131,7 +131,7 @@ export default function ContactFooter() {
               copyAriaKey="contact.copy.copyLinkedin"
             />
           </div>
-        </motion.div>
+        </m.div>
 
         <div className="mt-20 flex flex-col gap-3 border-t border-gridline pt-6 font-mono text-[11px] tracking-[0.15em] text-white/50 md:flex-row md:items-center md:justify-between">
           <p>{t("contact.copyright")}</p>

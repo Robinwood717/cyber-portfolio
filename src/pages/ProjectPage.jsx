@@ -1,26 +1,28 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { getProject } from "../data/projects";
-import DossierModal from "../components/DossierModal";
+
+// Behind the [ OPEN CASE FILE ] trigger — loads on first open.
+const DossierModal = lazy(() => import("../components/DossierModal"));
 
 const STATUS_TONE = {
   red: "border-red-500/40 bg-red-500/10 text-red-400",
   amber: "border-amber-400/40 bg-amber-400/10 text-amber-300",
   green: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
   neon: "border-neon/40 bg-neon/10 text-neon",
-  neutral: "border-white/10 text-white/40",
+  neutral: "border-white/10 text-white/55",
 };
 
 function Block({ label, children }) {
   return (
-    <motion.section variants={fadeUp} className="border-t border-gridline pt-8">
+    <m.section variants={fadeUp} className="border-t border-gridline pt-8">
       <p className="font-mono text-xs tracking-[0.35em] text-neon">{label}</p>
       <div className="mt-5">{children}</div>
-    </motion.section>
+    </m.section>
   );
 }
 
@@ -30,6 +32,8 @@ export default function ProjectPage() {
   const shouldReduce = useReducedMotion();
   const { t, tr } = useI18n();
   const [dossierOpen, setDossierOpen] = useState(false);
+  // Mounted on first open, kept mounted afterwards for the exit animation.
+  const [dossierMounted, setDossierMounted] = useState(false);
 
   // Hooks must run unconditionally — optional chaining keeps this safe when
   // the slug doesn't resolve to a flagship project.
@@ -47,13 +51,13 @@ export default function ProjectPage() {
         {t("project.back")}
       </Link>
 
-      <motion.div
+      <m.div
         variants={stagger}
         initial={shouldReduce ? false : "hidden"}
         animate="visible"
         className="mt-8"
       >
-        <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2 font-mono text-[10px] tracking-[0.2em]">
+        <m.div variants={fadeUp} className="flex flex-wrap items-center gap-2 font-mono text-[10px] tracking-[0.2em]">
           {project.statusTags?.map((tag) => (
             <span
               key={tag.text}
@@ -62,22 +66,25 @@ export default function ProjectPage() {
               {tag.text}
             </span>
           ))}
-        </motion.div>
+        </m.div>
 
-        <motion.p variants={fadeUp} className="mt-6 font-mono text-[11px] tracking-[0.35em] text-neon">
+        <m.p variants={fadeUp} className="mt-6 font-mono text-[11px] tracking-[0.35em] text-neon">
           {project.codename}
-        </motion.p>
-        <motion.h1 variants={fadeUp} className="mt-3 font-display text-4xl font-bold text-white md:text-5xl">
+        </m.p>
+        <m.h1 variants={fadeUp} className="mt-3 font-display text-4xl font-bold text-white md:text-5xl">
           {project.title}
-        </motion.h1>
-        <motion.p variants={fadeUp} className="mt-5 max-w-2xl font-mono text-sm leading-relaxed text-white/60 md:text-base">
+        </m.h1>
+        <m.p variants={fadeUp} className="mt-5 max-w-2xl font-mono text-sm leading-relaxed text-white/60 md:text-base">
           {tr(project.summary)}
-        </motion.p>
+        </m.p>
 
-        <motion.div variants={fadeUp} className="mt-7 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.2em]">
+        <m.div variants={fadeUp} className="mt-7 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.2em]">
           <button
             type="button"
-            onClick={() => setDossierOpen(true)}
+            onClick={() => {
+              setDossierMounted(true);
+              setDossierOpen(true);
+            }}
             className="border border-red-500/40 bg-red-500/[0.06] px-4 py-2.5 text-red-300 transition-all duration-200 hover:bg-red-500/15 active:scale-[0.97]"
           >
             {t("project.openCaseFile")}
@@ -90,21 +97,21 @@ export default function ProjectPage() {
           >
             {t("project.viewOnGithub")}
           </a>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
 
       {project.authorized && (
-        <motion.p
+        <m.p
           initial={shouldReduce ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
           className="mt-10 rounded-lg border border-amber-400/25 bg-amber-400/[0.04] p-4 font-mono text-xs leading-relaxed text-amber-200/70"
         >
           ⚠ {tr(project.authorized)}
-        </motion.p>
+        </m.p>
       )}
 
-      <motion.div
+      <m.div
         variants={stagger}
         initial={shouldReduce ? false : "hidden"}
         whileInView="visible"
@@ -144,9 +151,17 @@ export default function ProjectPage() {
             {tr(project.outcome)}
           </p>
         </Block>
-      </motion.div>
+      </m.div>
 
-      <DossierModal open={dossierOpen} onClose={() => setDossierOpen(false)} project={project} />
+      {dossierMounted && (
+        <Suspense fallback={null}>
+          <DossierModal
+            open={dossierOpen}
+            onClose={() => setDossierOpen(false)}
+            project={project}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

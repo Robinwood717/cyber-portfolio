@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { fadeUp, stagger } from "../lib/motion";
 
 const GLYPHS = "!<>-_\\/[]{}=+*^?#01";
@@ -55,27 +55,27 @@ export default function SectionHeader({ index, label, title, className = "" }) {
   const { display, run } = useLabelScramble(label, !!shouldReduce);
 
   return (
-    <motion.div
+    <m.div
       variants={stagger}
       initial={shouldReduce ? false : "hidden"}
       whileInView="visible"
       viewport={{ once: true, margin: "-60px" }}
       className={className}
     >
-      <motion.p
+      <m.p
         variants={fadeUp}
         onViewportEnter={run}
         viewport={{ once: true, margin: "-60px" }}
         className="font-mono text-xs tracking-[0.35em] text-neon"
       >
         [{index}] {"//"} {display}
-      </motion.p>
-      <motion.h2
+      </m.p>
+      <m.h2
         variants={fadeUp}
         className="mt-4 font-display text-3xl font-semibold text-white md:text-5xl"
       >
         {title}
-      </motion.h2>
-    </motion.div>
+      </m.h2>
+    </m.div>
   );
 }

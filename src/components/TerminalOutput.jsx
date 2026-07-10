@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useI18n } from "../i18n/LanguageContext";
 import LogoMark from "./LogoMark";
 import CopyButton from "./CopyButton";
@@ -19,7 +19,7 @@ const TONES = {
   default: "text-white/70",
   neon: "text-neon",
   dim: "text-white/50",
-  faint: "text-white/30",
+  faint: "text-white/50",
   link: "text-neon underline underline-offset-4 decoration-neon/40 hover:decoration-neon",
 };
 
@@ -28,14 +28,14 @@ function Reveal({ seq, instant, children, className }) {
   const idx = seq.i;
   seq.i += 1;
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(idx * 0.09, 1.2), duration: 0.18 }}
       className={className}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -115,7 +115,7 @@ function Help({ d, seq, instant, t, onRun, onInsert }) {
           command={c.name}
           onRun={c.arg ? () => onInsert(`${c.name} `) : onRun}
         />
-        {c.arg ? <span className="text-white/30"> {c.arg}</span> : null}
+        {c.arg ? <span className="text-white/50"> {c.arg}</span> : null}
       </span>
       <span className="text-white/50">{t(`terminal.desc.${c.name}`)}</span>
     </Reveal>
@@ -132,7 +132,7 @@ function Whoami({ d, seq, instant, resolve, t }) {
           instant={instant}
           className="grid grid-cols-[7.5rem_1fr] gap-x-3"
         >
-          <span className="text-white/35 tracking-wider">{label}</span>
+          <span className="text-white/50 tracking-wider">{label}</span>
           <span className="text-white/85">{resolve(value)}</span>
         </Reveal>
       ))}
@@ -148,7 +148,7 @@ function DossierCard({ item, resolve, t, onRun }) {
     <div className="border border-white/10 bg-white/[0.03] p-3">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span className="text-[10px] tracking-[0.25em] text-neon">{item.codename}</span>
-        <span className="text-[10px] tracking-wider text-white/35">{resolve(item.eyebrow)}</span>
+        <span className="text-[10px] tracking-wider text-white/50">{resolve(item.eyebrow)}</span>
       </div>
       <p className="mt-1 font-display text-sm font-medium text-white">{item.title}</p>
       <p className="mt-1 text-xs leading-relaxed text-white/55">{resolve(item.summary)}</p>
@@ -178,7 +178,7 @@ function Projects({ d, seq, instant, resolve, t, onRun }) {
 function Skills({ d, seq, instant, t }) {
   return d.groups.map((g) => (
     <Reveal key={g.label} seq={seq} instant={instant}>
-      <p className="text-[10px] tracking-[0.25em] text-white/35">{g.label}</p>
+      <p className="text-[10px] tracking-[0.25em] text-white/50">{g.label}</p>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
         {(g.chipsKey ? t(g.chipsKey) : g.chips).map((chip) => (
           <Chip key={chip} tone={g.tone}>
@@ -195,7 +195,7 @@ function Experience({ d, seq, instant, resolve }) {
     <Reveal key={i} seq={seq} instant={instant} className="flex flex-wrap gap-x-3 gap-y-0.5">
       <span className="shrink-0 text-neon/70">[{resolve(row.period)}]</span>
       <span className="text-white/85">{resolve(row.role)}</span>
-      <span className="text-white/40">· {resolve(row.org)}</span>
+      <span className="text-white/55">· {resolve(row.org)}</span>
     </Reveal>
   ));
 }
@@ -212,7 +212,7 @@ function ContactLine({ link, seq, instant, t }) {
   const valueRef = useRef(null);
   return (
     <Reveal seq={seq} instant={instant} className="grid grid-cols-[7.5rem_1fr] gap-x-3">
-      <span className="text-white/35 tracking-wider">{link.label}</span>
+      <span className="text-white/50 tracking-wider">{link.label}</span>
       <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <a
           ref={valueRef}
@@ -257,7 +257,7 @@ function Ls({ d, seq, instant, t }) {
         ))}
       </Reveal>
       <Reveal seq={seq} instant={instant}>
-        <p className="text-white/30">{t("terminal.lsLegend")}</p>
+        <p className="text-white/50">{t("terminal.lsLegend")}</p>
       </Reveal>
     </>
   );
@@ -355,7 +355,7 @@ function Usage({ d, seq, instant, t, onRun }) {
         </p>
       </Reveal>
       <Reveal seq={seq} instant={instant} className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <span className="text-white/30">{t("terminal.filesLabel")}</span>
+        <span className="text-white/50">{t("terminal.filesLabel")}</span>
         {d.slugs.map((slug) => (
           <RunButton key={slug} label={slug} command={`${d.command} ${slug}`} onRun={onRun} />
         ))}
@@ -387,7 +387,7 @@ function ErrorOut({ d, seq, instant, t, onRun }) {
         </Reveal>
       )}
       <Reveal seq={seq} instant={instant}>
-        <p className="text-white/30">{t("terminal.helpHint")}</p>
+        <p className="text-white/50">{t("terminal.helpHint")}</p>
       </Reveal>
     </>
   );
@@ -396,22 +396,22 @@ function ErrorOut({ d, seq, instant, t, onRun }) {
 function Denied({ instant, t }) {
   return (
     <>
-      <motion.p
+      <m.p
         initial={instant ? false : { opacity: 0 }}
         animate={instant ? { opacity: 1 } : { opacity: [0, 1, 0.15, 1] }}
         transition={{ duration: 0.5, times: [0, 0.3, 0.55, 1] }}
         className={`font-bold tracking-[0.3em] ${ERROR_RED}`}
       >
         {t("terminal.sudoDenied")}
-      </motion.p>
-      <motion.p
+      </m.p>
+      <m.p
         initial={instant ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: instant ? 0 : 0.6, duration: 0.2 }}
         className="text-white/50"
       >
         {t("terminal.sudoLine")}
-      </motion.p>
+      </m.p>
     </>
   );
 }
@@ -426,7 +426,7 @@ function Banner({ seq, instant, t }) {
             {t("hero.name")}
           </p>
           <p className="text-[11px] text-white/50">{t("hero.role")}</p>
-          <p className="mt-0.5 text-[10px] tracking-wider text-white/30">
+          <p className="mt-0.5 text-[10px] tracking-wider text-white/50">
             {t("terminal.bannerVersion")}
           </p>
         </div>

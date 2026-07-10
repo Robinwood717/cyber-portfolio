@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import { fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
@@ -46,7 +46,7 @@ function Node({ tag, ongoing }) {
 function Entry({ item, tr }) {
   const tone = TAG_TONE[item.tag] ?? TAG_TONE.EDUCATION;
   return (
-    <motion.li variants={fadeUp} className="relative" style={{ paddingLeft: SPINE + 26 }}>
+    <m.li variants={fadeUp} className="relative" style={{ paddingLeft: SPINE + 26 }}>
       <Node tag={item.tag} ongoing={item.ongoing} />
       {/* connector tick from the spine into the entry */}
       <span
@@ -76,7 +76,7 @@ function Entry({ item, tr }) {
       <p className="mt-3 max-w-2xl font-mono text-xs leading-relaxed text-white/55 md:text-sm">
         {tr(item.detail)}
       </p>
-    </motion.li>
+    </m.li>
   );
 }
 
@@ -89,7 +89,7 @@ export default function Experience() {
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
         <SectionHeader index="03" label={t("experience.label")} title={t("experience.title")} />
 
-        <motion.p
+        <m.p
           initial={shouldReduce ? false : { opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -97,9 +97,9 @@ export default function Experience() {
           className="mt-6 max-w-xl font-mono text-sm leading-relaxed text-white/50"
         >
           {t("experience.intro")}
-        </motion.p>
+        </m.p>
 
-        <motion.ol
+        <m.ol
           variants={stagger}
           initial={shouldReduce ? false : "hidden"}
           whileInView="visible"
@@ -107,7 +107,7 @@ export default function Experience() {
           className="relative mt-14 space-y-12"
         >
           {/* spine — draws in from the top as the log enters the viewport */}
-          <motion.span
+          <m.span
             aria-hidden="true"
             style={{ left: SPINE }}
             initial={shouldReduce ? false : { scaleY: 0 }}
@@ -119,7 +119,7 @@ export default function Experience() {
           {EXPERIENCE.map((item) => (
             <Entry key={`${item.period.en}-${item.role.en}`} item={item} tr={tr} />
           ))}
-        </motion.ol>
+        </m.ol>
       </div>
     </section>
   );

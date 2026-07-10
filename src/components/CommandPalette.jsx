@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { m, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "../i18n/LanguageContext";
 import { useFocusTrap } from "../hooks/useFocusTrap";
@@ -132,7 +132,7 @@ export default function CommandPalette({ open, onClose }) {
   return (
     <AnimatePresence>
       {open && (
-        <motion.div
+        <m.div
           className="fixed inset-0 z-[95] flex items-start justify-center p-4 pt-[12vh]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -146,7 +146,7 @@ export default function CommandPalette({ open, onClose }) {
             className="fixed inset-0 cursor-default bg-black/70 backdrop-blur-sm"
           />
 
-          <motion.div
+          <m.div
             ref={panelRef}
             role="dialog"
             aria-modal="true"
@@ -172,7 +172,7 @@ export default function CommandPalette({ open, onClose }) {
 
             <ul className="max-h-[46vh] overflow-y-auto py-2">
               {filtered.length === 0 && (
-                <li className="px-4 py-6 text-center font-mono text-xs text-white/40">
+                <li className="px-4 py-6 text-center font-mono text-xs text-white/55">
                   {t("palette.empty")}
                 </li>
               )}
@@ -181,7 +181,7 @@ export default function CommandPalette({ open, onClose }) {
                 return (
                   <li key={`${item.group}-${item.label}`}>
                     {showGroup && (
-                      <p className="px-4 pb-1 pt-3 font-mono text-[9px] tracking-[0.25em] text-white/30">
+                      <p className="px-4 pb-1 pt-3 font-mono text-[9px] tracking-[0.25em] text-white/50">
                         {groupLabel(item.group)}
                       </p>
                     )}
@@ -201,12 +201,12 @@ export default function CommandPalette({ open, onClose }) {
               })}
             </ul>
 
-            <div className="flex items-center justify-between border-t border-white/10 px-4 py-2 font-mono text-[10px] tracking-[0.15em] text-white/30">
+            <div className="flex items-center justify-between border-t border-white/10 px-4 py-2 font-mono text-[10px] tracking-[0.15em] text-white/50">
               <span>{flash ?? t("palette.hint")}</span>
               <span className="text-neon/60">⌘K</span>
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { SPRING, fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
@@ -194,27 +194,27 @@ export default function TerminalHero() {
 
       {/* Static identity block — recruiter reads name + title immediately,
           independent of the boot animation. */}
-      <motion.div
+      <m.div
         variants={stagger}
         initial={shouldReduce ? false : "hidden"}
         animate="visible"
         className="relative mb-9 flex flex-col items-center text-center"
       >
-        <motion.p
+        <m.p
           variants={fadeUp}
           className="font-mono text-[11px] tracking-[0.4em] text-neon/80"
         >
           {t("hero.role")}
-        </motion.p>
-        <motion.h1
+        </m.p>
+        <m.h1
           variants={fadeUp}
           className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl"
         >
           {t("hero.name")}
-        </motion.h1>
-      </motion.div>
+        </m.h1>
+      </m.div>
 
-      <motion.div
+      <m.div
         initial={shouldReduce ? false : { opacity: 0, y: 36, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ ...SPRING, delay: 0.1 }}
@@ -296,15 +296,15 @@ export default function TerminalHero() {
           <span>{t("terminal.hint")}</span>
           <span className="hidden sm:block">{t("terminal.historyHint")}</span>
         </div>
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         variants={stagger}
         initial={shouldReduce ? false : "hidden"}
         animate={done || shouldReduce ? "visible" : "hidden"}
         className="relative mt-10 flex flex-col items-center gap-8"
       >
-        <motion.div
+        <m.div
           variants={fadeUp}
           className="flex flex-wrap items-center justify-center gap-4 font-mono text-xs tracking-[0.2em]"
         >
@@ -324,14 +324,14 @@ export default function TerminalHero() {
               {t("hero.establishContact")}
             </Link>
           </MagneticButton>
-        </motion.div>
-        <motion.p
+        </m.div>
+        <m.p
           variants={fadeUp}
           className="font-mono text-[10px] tracking-[0.4em] text-white/50"
         >
           {t("hero.scrollHint")}
-        </motion.p>
-      </motion.div>
+        </m.p>
+      </m.div>
 
       <p
         aria-hidden="true"

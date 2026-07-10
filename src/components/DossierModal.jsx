@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { m, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useI18n } from "../i18n/LanguageContext";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 
@@ -22,7 +22,7 @@ export default function DossierModal({ open, onClose, project }) {
   return (
     <AnimatePresence>
       {open && (
-        <motion.div
+        <m.div
           className="fixed inset-0 z-[90] flex items-start justify-center overflow-y-auto p-4 sm:p-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -37,7 +37,7 @@ export default function DossierModal({ open, onClose, project }) {
             className="fixed inset-0 cursor-default bg-black/85 backdrop-blur-sm"
           />
 
-          <motion.div
+          <m.div
             ref={panelRef}
             role="dialog"
             aria-modal="true"
@@ -54,7 +54,7 @@ export default function DossierModal({ open, onClose, project }) {
                 <span className="rounded border border-red-500/50 bg-red-500/15 px-2 py-1 text-red-300">
                   TLP:RED
                 </span>
-                <span className="text-white/40">{t("project.dossier.header")}</span>
+                <span className="text-white/55">{t("project.dossier.header")}</span>
               </div>
               <button
                 ref={closeRef}
@@ -82,30 +82,30 @@ export default function DossierModal({ open, onClose, project }) {
                 {tr(project.summary)}
               </p>
 
-              <motion.dl
+              <m.dl
                 initial={shouldReduce ? false : "hidden"}
                 animate="visible"
                 transition={{ staggerChildren: 0.06, delayChildren: 0.1 }}
                 className="mt-7 space-y-2.5 border-t border-white/10 pt-6 font-mono text-xs md:text-sm"
               >
                 {project.dossier?.map(([k, v]) => (
-                  <motion.div
+                  <m.div
                     key={k}
                     variants={rowVariants}
                     className="grid grid-cols-[110px_1fr] gap-3 leading-relaxed md:grid-cols-[130px_1fr]"
                   >
                     <dt className="text-red-400/60">{k}</dt>
                     <dd className="text-white/70">{tr(v)}</dd>
-                  </motion.div>
+                  </m.div>
                 ))}
-              </motion.dl>
+              </m.dl>
 
-              <p className="mt-8 border-t border-white/10 pt-4 font-mono text-[10px] tracking-[0.2em] text-white/25">
+              <p className="mt-8 border-t border-white/10 pt-4 font-mono text-[10px] tracking-[0.2em] text-white/45">
                 {t("project.dossier.footer")}
               </p>
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

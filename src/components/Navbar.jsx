@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { SPRING } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
@@ -25,7 +25,7 @@ export default function Navbar({ onOpenPalette }) {
 
   return (
     <>
-      <motion.header
+      <m.header
         initial={shouldReduce ? false : { y: -64, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ ...SPRING, delay: 0.2 }}
@@ -45,7 +45,7 @@ export default function Navbar({ onOpenPalette }) {
           </Link>
 
           {/* Desktop controls */}
-          <div className="hidden items-center gap-x-5 text-xs tracking-[0.22em] md:flex">
+          <div className="hidden items-center gap-x-3 text-xs tracking-[0.22em] md:flex lg:gap-x-5">
             <NavLink to="/#doctrine">{t("nav.doctrine")}</NavLink>
             <NavLink to="/#experience">{t("nav.experience")}</NavLink>
             <NavLink to="/#operations">{t("nav.operations")}</NavLink>
@@ -60,7 +60,7 @@ export default function Navbar({ onOpenPalette }) {
                 <circle cx="11" cy="11" r="7" />
                 <line x1="21" y1="21" x2="16.5" y2="16.5" />
               </svg>
-              <span>⌘K</span>
+              <span className="hidden lg:inline">⌘K</span>
             </button>
 
             <button
@@ -99,7 +99,7 @@ export default function Navbar({ onOpenPalette }) {
             </svg>
           </button>
         </nav>
-      </motion.header>
+      </m.header>
 
       <MobileNav
         open={menuOpen}

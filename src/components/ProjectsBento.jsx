@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SectionHeader from "./SectionHeader";
 import { bentoCard, glareSweep, stagger } from "../lib/motion";
@@ -10,12 +10,12 @@ const STATUS_TONE = {
   amber: "border-amber-400/40 bg-amber-400/10 text-amber-300",
   green: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
   neon: "border-neon/40 bg-neon/10 text-neon",
-  neutral: "border-white/10 text-white/40",
+  neutral: "border-white/10 text-white/55",
 };
 
 function Tag({ children }) {
   return (
-    <span className="rounded border border-white/10 bg-white/[0.04] px-2.5 py-1 font-mono text-[10px] tracking-[0.18em] text-white/45 transition-colors duration-300 group-hover:border-neon/30 group-hover:text-neon">
+    <span className="rounded border border-white/10 bg-white/[0.04] px-2.5 py-1 font-mono text-[10px] tracking-[0.18em] text-white/55 transition-colors duration-300 group-hover:border-neon/30 group-hover:text-neon">
       {children}
     </span>
   );
@@ -23,7 +23,7 @@ function Tag({ children }) {
 
 function CardShell({ index, className = "", children }) {
   return (
-    <motion.article
+    <m.article
       variants={bentoCard}
       whileHover="hover"
       style={{
@@ -33,19 +33,19 @@ function CardShell({ index, className = "", children }) {
       }}
       className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)] md:p-8 ${className}`}
     >
-      <span className="pointer-events-none absolute right-5 top-5 font-mono text-[10px] tracking-[0.3em] text-white/20">
+      <span className="pointer-events-none absolute right-5 top-5 font-mono text-[10px] tracking-[0.3em] text-white/40">
         [{index}]
       </span>
       <div className="relative z-10">{children}</div>
       <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 shadow-glow ring-1 ring-neon/60 transition-opacity duration-500 group-hover:opacity-100" />
-      <motion.div
+      <m.div
         aria-hidden="true"
         variants={glareSweep}
         className="pointer-events-none absolute inset-y-0 left-0 z-20 w-3/5"
       >
         <div className="h-full w-full -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
-      </motion.div>
-    </motion.article>
+      </m.div>
+    </m.article>
   );
 }
 
@@ -171,7 +171,7 @@ export default function ProjectsBento() {
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
         <SectionHeader index="04" label={t("operations.label")} title={t("operations.title")} />
 
-        <motion.div
+        <m.div
           variants={stagger}
           initial={shouldReduce ? false : "hidden"}
           whileInView="visible"
@@ -184,7 +184,7 @@ export default function ProjectsBento() {
           {repos.map((project, i) => (
             <RepoCard key={project.slug} project={project} index={`0${i + 4}`} t={t} tr={tr} />
           ))}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );
