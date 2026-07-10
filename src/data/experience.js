@@ -1,13 +1,7 @@
-// [REVIEW] Every entry below is DRAFTED from verifiable workspace/GitHub
-// artifacts, NOT from a confirmed CV. Dates and role framing are provisional
-// placeholders — correct them before publishing. Search this file for
-// "[REVIEW]" to find each item that needs your confirmation.
-//
 // Text fields are { en, el } pairs, resolved at render via tr() from
 // LanguageContext. Security acronyms and tool names stay English in both.
 export const EXPERIENCE = [
   {
-    // [REVIEW] Degree confirmed via site copy; date span is an assumption.
     period: { en: "2021 - PRESENT", el: "2021 - ΣΗΜΕΡΑ" },
     ongoing: true,
     role: {
@@ -22,8 +16,6 @@ export const EXPERIENCE = [
     },
   },
   {
-    // [REVIEW] Based on the IR-2506-RUNNER case file; confirm date + context
-    // (personal engagement vs. coursework vs. professional).
     period: { en: "2026", el: "2026" },
     role: {
       en: "Incident Response: PowerShell implant eradication",
@@ -37,7 +29,6 @@ export const EXPERIENCE = [
     },
   },
   {
-    // [REVIEW] Derived from the dlp-scanner repo in this workspace.
     period: { en: "2026", el: "2026" },
     role: {
       en: "Built DLP Scanner (PII auditor)",
@@ -51,7 +42,6 @@ export const EXPERIENCE = [
     },
   },
   {
-    // [REVIEW] Derived from the Doc Digitizer workspace project.
     period: { en: "2026", el: "2026" },
     role: {
       en: "Built Doc Digitizer (OCR pipeline)",
@@ -65,7 +55,6 @@ export const EXPERIENCE = [
     },
   },
   {
-    // [REVIEW] Derived from the LibreChat workspace project.
     period: { en: "2026", el: "2026" },
     role: {
       en: "Deployed self-hosted team chat",
@@ -79,7 +68,6 @@ export const EXPERIENCE = [
     },
   },
   {
-    // [REVIEW] Derived from the mitm-lab-assignment repo.
     period: { en: "2025", el: "2025" },
     role: {
       en: "MITM attack lab + defense analysis",

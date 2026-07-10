@@ -132,7 +132,9 @@ function RepoCard({ project, index, t, tr }) {
 function TelemetryCard({ index, t }) {
   const telemetry = t("operations.telemetry");
   return (
-    <CardShell index={index}>
+    // Pinned to the first row's free column so the two flagship dossiers
+    // stay adjacent in DOM (and single-column) order.
+    <CardShell index={index} className="lg:col-start-3 lg:row-start-1">
       <div className="flex items-center gap-2">
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-neon/60" />
@@ -167,18 +169,18 @@ export default function ProjectsBento() {
   return (
     <section id="operations" className="relative border-t border-gridline scroll-mt-24">
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <SectionHeader index="06" label={t("operations.label")} title={t("operations.title")} />
+        <SectionHeader index="04" label={t("operations.label")} title={t("operations.title")} />
 
         <motion.div
           variants={stagger}
           initial={shouldReduce ? false : "hidden"}
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
-          className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3"
+          className="mt-14 grid grid-cols-1 items-start gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3"
         >
           {flagships[0] && <FlagshipCard project={flagships[0]} index="01" t={t} tr={tr} />}
-          <TelemetryCard index="02" t={t} />
-          {flagships[1] && <FlagshipCard project={flagships[1]} index="03" t={t} tr={tr} />}
+          {flagships[1] && <FlagshipCard project={flagships[1]} index="02" t={t} tr={tr} />}
+          <TelemetryCard index="03" t={t} />
           {repos.map((project, i) => (
             <RepoCard key={project.slug} project={project} index={`0${i + 4}`} t={t} tr={tr} />
           ))}

@@ -16,9 +16,9 @@ export default function Home() {
       <SkillsMarquee />
       <Methodology />
       <Experience />
+      <ProjectsBento />
       <CommandCenter />
       <KillChain />
-      <ProjectsBento />
     </>
   );
 }

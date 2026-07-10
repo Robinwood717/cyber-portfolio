@@ -230,7 +230,7 @@ export default function CommandCenter() {
   return (
     <section id="commandcenter" className="relative border-t border-gridline scroll-mt-24">
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <SectionHeader index="04" label={t("soc.label")} title={t("soc.title")} />
+        <SectionHeader index="05" label={t("soc.label")} title={t("soc.title")} />
 
         <motion.p
           initial={shouldReduce ? false : { opacity: 0 }}
@@ -247,7 +247,7 @@ export default function CommandCenter() {
           initial={shouldReduce ? false : "hidden"}
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
-          className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3"
+          className="mt-14 grid grid-cols-1 items-start gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3"
         >
           <Panel label={t("soc.threatFeed")} className="md:col-span-2">
             <ThreatFeed lines={t("soc.feed")} frozen={frozen} />

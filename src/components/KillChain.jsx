@@ -39,7 +39,7 @@ export default function KillChain() {
   return (
     <section id="killchain" className="relative border-t border-gridline scroll-mt-24">
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <SectionHeader index="05" label={t("killchain.label")} title={t("killchain.title")} />
+        <SectionHeader index="06" label={t("killchain.label")} title={t("killchain.title")} />
 
         <motion.div
           variants={stagger}

@@ -229,7 +229,7 @@ export default function TerminalHero() {
           <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
           <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
           <span className="h-3 w-3 rounded-full bg-[#28c840]" />
-          <p className="pointer-events-none absolute inset-x-0 truncate px-20 text-center font-mono text-[11px] text-white/35">
+          <p className="pointer-events-none absolute inset-x-0 truncate px-20 text-center font-mono text-[11px] text-white/50">
             anastasios@aegean: ~/secure-session - ssh - 80×24
           </p>
         </div>
@@ -241,27 +241,32 @@ export default function TerminalHero() {
           onClick={focusPrompt}
           className="h-[300px] cursor-text overflow-y-auto px-5 py-5 font-mono text-[13px] leading-relaxed md:h-[340px] md:px-7 md:text-[14px] [scrollbar-color:rgba(16,185,129,0.35)_transparent] [scrollbar-width:thin]"
         >
-          <div role="log" aria-live="polite" className="space-y-2.5">
-            {!cleared &&
-              bootLines
-                .slice(0, Math.min(pos.line + 1, bootLines.length))
-                .map((line, i) => {
-                  const complete = i < pos.line;
-                  return (
-                    <p key={line} className={TONES[i] ?? "text-white/70"}>
-                      {complete ? line : line.slice(0, pos.char)}
-                      {!complete && <Cursor />}
-                    </p>
-                  );
-                })}
-            {entries.map((entry) => (
-              <TerminalEntry
-                key={entry.id}
-                entry={entry}
-                onRun={handleRun}
-                onInsert={handleInsert}
-              />
-            ))}
+          <div className="space-y-2.5">
+            {/* Only fully-typed lines live in the aria-live log; the line
+                still animating renders aria-hidden below so screen readers
+                hear one clean announcement per line, not per keystroke. */}
+            <div role="log" aria-live="polite" className="space-y-2.5">
+              {!cleared &&
+                bootLines.slice(0, pos.line).map((line, i) => (
+                  <p key={line} className={TONES[i] ?? "text-white/70"}>
+                    {line}
+                  </p>
+                ))}
+              {entries.map((entry) => (
+                <TerminalEntry
+                  key={entry.id}
+                  entry={entry}
+                  onRun={handleRun}
+                  onInsert={handleInsert}
+                />
+              ))}
+            </div>
+            {!cleared && !done && pos.line < bootLines.length && (
+              <p aria-hidden="true" className={TONES[pos.line] ?? "text-white/70"}>
+                {bootLines[pos.line].slice(0, pos.char)}
+                <Cursor />
+              </p>
+            )}
           </div>
 
           {done && (
@@ -281,13 +286,13 @@ export default function TerminalHero() {
                 autoCorrect="off"
                 spellCheck={false}
                 enterKeyHint="go"
-                className="min-h-11 min-w-0 flex-1 bg-transparent text-[16px] text-white/85 caret-neon outline-none [text-shadow:none] placeholder:text-white/25 focus-visible:outline-none md:min-h-0 md:text-[14px]"
+                className="min-h-11 min-w-0 flex-1 border-b border-transparent bg-transparent text-[16px] text-white/85 caret-neon outline-none [text-shadow:none] placeholder:text-white/45 focus-visible:border-neon/60 md:min-h-0 md:text-[14px]"
               />
             </div>
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-4 border-t border-white/10 px-5 py-2 font-mono text-[10px] tracking-wider text-white/25">
+        <div className="flex items-center justify-between gap-4 border-t border-white/10 px-5 py-2 font-mono text-[10px] tracking-wider text-white/50">
           <span>{t("terminal.hint")}</span>
           <span className="hidden sm:block">{t("terminal.historyHint")}</span>
         </div>
@@ -322,7 +327,7 @@ export default function TerminalHero() {
         </motion.div>
         <motion.p
           variants={fadeUp}
-          className="font-mono text-[10px] tracking-[0.4em] text-white/25"
+          className="font-mono text-[10px] tracking-[0.4em] text-white/50"
         >
           {t("hero.scrollHint")}
         </motion.p>

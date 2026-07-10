@@ -56,8 +56,9 @@ src/
 
 ## Content ownership
 
-- **Experience** (`src/data/experience.js`) is DRAFTED from repos/workspace and
-  marked `[REVIEW]` — confirm dates and framing before publishing.
+- **Experience** (`src/data/experience.js`) is drafted from repos/workspace;
+  dates and framing still need confirmation against the CV (tracked as F1 in
+  `docs/site-audit-2026-07-10.md`).
 - **Greek** (`src/i18n/el.js`): nav/chrome are translated; prose is `TODO_EL`
   and falls back to English until you replace it.
 - **Projects** are the four public repos at github.com/Robinwood717.
@@ -67,6 +68,10 @@ src/
 - SPA deep links: `_redirects` (Netlify), `vercel.json` (Vercel), `dist/404.html`
   (GitHub Pages, written by `postbuild`). For GitHub Pages under a repo subpath,
   also set Vite `base`.
+- Security headers: `vercel.json` (Vercel) and `public/_headers` (Netlify) carry
+  the same CSP/hardening set — keep them in sync. GitHub Pages cannot serve
+  custom response headers, so it is not a supported target for the hardened
+  deployment; use Vercel or Netlify for production.
 - Social preview: `og.svg` works in-app; most scrapers want an absolute PNG —
   export an `og.png` and point `og:image` / `twitter:image` at its absolute URL
   once a domain is chosen. Uncomment the canonical link in `index.html` too.

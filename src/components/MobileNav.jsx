@@ -1,8 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useI18n } from "../i18n/LanguageContext";
-
-const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+import { useFocusTrap } from "../hooks/useFocusTrap";
 
 // Full-screen mobile menu in the terminal aesthetic: staggered command-style
 // links, focus-trapped, Esc/close to dismiss, body-scroll locked.
@@ -11,44 +10,13 @@ const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1
 // by an exit animation — when closed it is `opacity-0 pointer-events-none inert`
 // so it can never block the page even if a transition is interrupted. The fade
 // uses a CSS transition (off main-thread, no rAF dependency). Only exists below
-// `sm`; the desktop nav renders its own horizontal controls.
+// `md`; the desktop nav renders its own horizontal controls.
 export default function MobileNav({ open, onClose, onOpenPalette }) {
   const { t, lang, toggle } = useI18n();
   const panelRef = useRef(null);
   const closeRef = useRef(null);
 
-  useEffect(() => {
-    if (!open) return undefined;
-    const previouslyFocused = document.activeElement;
-    document.body.style.overflow = "hidden";
-    closeRef.current?.focus();
-
-    const onKey = (e) => {
-      if (e.key === "Escape") {
-        onClose();
-        return;
-      }
-      if (e.key !== "Tab") return;
-      const nodes = panelRef.current?.querySelectorAll(FOCUSABLE);
-      if (!nodes || nodes.length === 0) return;
-      const first = nodes[0];
-      const last = nodes[nodes.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-      if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
-    };
-  }, [open, onClose]);
+  useFocusTrap(panelRef, { open, onClose, initialFocusRef: closeRef });
 
   const items = [
     { to: "/#doctrine", label: t("nav.doctrine") },
@@ -69,7 +37,7 @@ export default function MobileNav({ open, onClose, onOpenPalette }) {
       aria-hidden={!open}
       aria-label={t("nav.openMenu")}
       {...(open ? {} : { inert: "" })}
-      className={`fixed inset-0 z-[60] flex flex-col bg-void/95 backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)] transition-opacity duration-200 sm:hidden ${
+      className={`fixed inset-0 z-[60] flex flex-col bg-void/95 backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)] transition-opacity duration-200 md:hidden ${
         open ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >

@@ -45,7 +45,7 @@ export default function Navbar({ onOpenPalette }) {
           </Link>
 
           {/* Desktop controls */}
-          <div className="hidden items-center gap-x-5 text-xs tracking-[0.22em] sm:flex">
+          <div className="hidden items-center gap-x-5 text-xs tracking-[0.22em] md:flex">
             <NavLink to="/#doctrine">{t("nav.doctrine")}</NavLink>
             <NavLink to="/#experience">{t("nav.experience")}</NavLink>
             <NavLink to="/#operations">{t("nav.operations")}</NavLink>
@@ -90,7 +90,7 @@ export default function Navbar({ onOpenPalette }) {
             onClick={() => setMenuOpen(true)}
             aria-label={t("nav.openMenu")}
             aria-expanded={menuOpen}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded border border-white/10 text-white/70 transition-colors duration-300 hover:border-neon/40 hover:text-neon sm:hidden"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded border border-white/10 text-white/70 transition-colors duration-300 hover:border-neon/40 hover:text-neon md:hidden"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <line x1="3" y1="6" x2="21" y2="6" />

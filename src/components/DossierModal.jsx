@@ -1,9 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useI18n } from "../i18n/LanguageContext";
-
-const FOCUSABLE =
-  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+import { useFocusTrap } from "../hooks/useFocusTrap";
 
 export default function DossierModal({ open, onClose, project }) {
   const shouldReduce = useReducedMotion();
@@ -11,39 +9,8 @@ export default function DossierModal({ open, onClose, project }) {
   const panelRef = useRef(null);
   const closeRef = useRef(null);
 
-  // Lock body scroll, focus the close control, restore focus on unmount.
-  useEffect(() => {
-    if (!open) return undefined;
-    const previouslyFocused = document.activeElement;
-    document.body.style.overflow = "hidden";
-    closeRef.current?.focus();
-
-    const onKey = (e) => {
-      if (e.key === "Escape") {
-        onClose();
-        return;
-      }
-      if (e.key !== "Tab") return;
-      const nodes = panelRef.current?.querySelectorAll(FOCUSABLE);
-      if (!nodes || nodes.length === 0) return;
-      const first = nodes[0];
-      const last = nodes[nodes.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-      if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
-    };
-  }, [open, onClose]);
+  // Scroll lock, focus trap, Escape, and focus restore.
+  useFocusTrap(panelRef, { open, onClose, initialFocusRef: closeRef });
 
   if (!project) return null;
 

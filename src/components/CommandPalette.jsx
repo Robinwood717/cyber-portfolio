@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "../i18n/LanguageContext";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 import { SITE } from "../data/site";
 import { PROJECTS } from "../data/projects";
 
@@ -9,6 +10,7 @@ export default function CommandPalette({ open, onClose }) {
   const shouldReduce = useReducedMotion();
   const { t, toggle } = useI18n();
   const navigate = useNavigate();
+  const panelRef = useRef(null);
   const inputRef = useRef(null);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
@@ -98,25 +100,22 @@ export default function CommandPalette({ open, onClose }) {
     );
   }, [query, actions]);
 
+  // Scroll lock, focus trap, Escape, focus restore — shared modal contract.
+  useFocusTrap(panelRef, { open, onClose, initialFocusRef: inputRef });
+
   // Reset transient state each time the palette opens.
   useEffect(() => {
     if (open) {
       setQuery("");
       setActive(0);
       setFlash(null);
-      const id = requestAnimationFrame(() => inputRef.current?.focus());
-      return () => cancelAnimationFrame(id);
     }
-    return undefined;
   }, [open]);
 
   useEffect(() => setActive(0), [query]);
 
   const onKeyDown = (e) => {
-    if (e.key === "Escape") {
-      e.preventDefault();
-      onClose();
-    } else if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown") {
       e.preventDefault();
       setActive((i) => (filtered.length ? (i + 1) % filtered.length : 0));
     } else if (e.key === "ArrowUp") {
@@ -148,6 +147,7 @@ export default function CommandPalette({ open, onClose }) {
           />
 
           <motion.div
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-label={t("palette.placeholder")}
@@ -166,7 +166,7 @@ export default function CommandPalette({ open, onClose }) {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={t("palette.placeholder")}
                 aria-label={t("palette.placeholder")}
-                className="w-full bg-transparent font-mono text-sm text-white placeholder:text-white/30 focus:outline-none"
+                className="w-full rounded-sm bg-transparent font-mono text-sm text-white placeholder:text-white/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/50"
               />
             </div>
 

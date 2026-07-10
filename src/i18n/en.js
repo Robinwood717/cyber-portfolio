@@ -95,7 +95,7 @@ export const en = {
     label: "TRACK RECORD // ENGAGEMENTS",
     title: "Engagements & build log.",
     intro:
-      "A chronological log of engineering and security work: academic, applied, and self-directed. Timestamps and scope are provisional; correct before publishing.",
+      "A chronological log of engineering and security work: academic, applied, and self-directed.",
     present: "PRESENT",
   },
   killchain: {
@@ -169,12 +169,12 @@ export const en = {
     ],
   },
   contact: {
-    label: "ENCRYPTED CHANNEL",
-    title: "Establish secure connection.",
+    label: "DIRECT CHANNEL",
+    title: "Establish direct connection.",
     intro:
-      "Handshake complete. Channel integrity verified. Whether it's an incident that needs answers or a system that needs hardening, transmissions land here.",
+      "Channel open. Inbox monitored. Whether it's an incident that needs answers or a system that needs hardening, transmissions land here.",
     copyright: "© 2026 ANASTASIOS SOUMPAKIS // UNIVERSITY OF THE AEGEAN",
-    warning: "ALL SESSIONS LOGGED. UNAUTHORIZED ACCESS WILL BE TRACED.",
+    warning: "NO TRACKERS. NO ANALYTICS. YOUR SESSION STAYS YOURS.",
     copy: {
       copy: "COPY",
       copied: "COPIED ✓",
