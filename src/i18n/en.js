@@ -175,6 +175,14 @@ export const en = {
       "Handshake complete. Channel integrity verified. Whether it's an incident that needs answers or a system that needs hardening, transmissions land here.",
     copyright: "© 2026 ANASTASIOS SOUMPAKIS // UNIVERSITY OF THE AEGEAN",
     warning: "ALL SESSIONS LOGGED. UNAUTHORIZED ACCESS WILL BE TRACED.",
+    copy: {
+      copy: "COPY",
+      copied: "COPIED ✓",
+      fallback: "PRESS CTRL-C",
+      copyEmail: "Copy email address",
+      copyGithub: "Copy GitHub username",
+      copyLinkedin: "Copy LinkedIn username",
+    },
   },
   palette: {
     placeholder: "Type a command or search…",

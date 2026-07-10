@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
+import CopyButton from "./CopyButton";
 import { fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
 import { SITE } from "../data/site";
 
 const GLYPHS = "!<>-_\\/[]{}=+*^?#@$%&01";
 
-function ScrambleLink({ prefix, label, href }) {
+function ScrambleLink({ prefix, label, href, valueRef }) {
   const [display, setDisplay] = useState(label);
   const timer = useRef(null);
   const external = href.startsWith("http");
@@ -39,8 +40,7 @@ function ScrambleLink({ prefix, label, href }) {
   };
 
   return (
-    <motion.a
-      variants={fadeUp}
+    <a
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noreferrer" : undefined}
@@ -53,6 +53,7 @@ function ScrambleLink({ prefix, label, href }) {
         {prefix}
       </span>
       <span
+        ref={valueRef}
         aria-hidden="true"
         className="break-all font-mono text-lg text-white transition-all duration-300 group-hover:text-neon group-hover:[text-shadow:0_0_16px_rgba(16,185,129,0.45)] md:text-2xl"
       >
@@ -64,7 +65,27 @@ function ScrambleLink({ prefix, label, href }) {
       >
         ↗
       </span>
-    </motion.a>
+    </a>
+  );
+}
+
+// One contact row: the scramble link plus its [ COPY ] chip. The chip
+// copies exactly the text the row displays, so the two can never drift.
+function ContactRow({ prefix, label, href, copyAriaKey }) {
+  const { t } = useI18n();
+  const valueRef = useRef(null);
+  return (
+    <motion.div
+      variants={fadeUp}
+      className="flex flex-wrap items-center gap-x-4 gap-y-2"
+    >
+      <ScrambleLink prefix={prefix} label={label} href={href} valueRef={valueRef} />
+      <CopyButton
+        value={label}
+        ariaLabel={t(copyAriaKey)}
+        selectTargetRef={valueRef}
+      />
+    </motion.div>
   );
 }
 
@@ -91,9 +112,24 @@ export default function ContactFooter() {
           </motion.p>
 
           <div className="mt-14 flex flex-col gap-6">
-            <ScrambleLink prefix="EMAIL" label={SITE.email} href={`mailto:${SITE.email}`} />
-            <ScrambleLink prefix="GITHUB" label={SITE.githubHandle} href={SITE.github} />
-            <ScrambleLink prefix="LINKEDIN" label={SITE.linkedinHandle} href={SITE.linkedin} />
+            <ContactRow
+              prefix="EMAIL"
+              label={SITE.email}
+              href={`mailto:${SITE.email}`}
+              copyAriaKey="contact.copy.copyEmail"
+            />
+            <ContactRow
+              prefix="GITHUB"
+              label={SITE.githubHandle}
+              href={SITE.github}
+              copyAriaKey="contact.copy.copyGithub"
+            />
+            <ContactRow
+              prefix="LINKEDIN"
+              label={SITE.linkedinHandle}
+              href={SITE.linkedin}
+              copyAriaKey="contact.copy.copyLinkedin"
+            />
           </div>
         </motion.div>
 
