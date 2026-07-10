@@ -1,9 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SPRING, fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
+import { parse, runCommand, completeInput } from "../lib/terminalCommands";
+import TerminalEntry from "./TerminalOutput";
 import MagneticButton from "./MagneticButton";
+
+// Scrollback + input history caps keep a long-lived session bounded.
+const MAX_ENTRIES = 40;
+const MAX_HISTORY = 50;
 
 // Tones are positional and pair with the boot strings in the dictionary
 // (hero.boot). Keeping them out of i18n means translators only touch copy.
@@ -57,10 +63,123 @@ function useBootSequence(lines) {
 }
 
 export default function TerminalHero() {
-  const { t } = useI18n();
+  const { t, toggle } = useI18n();
   const bootLines = t("hero.boot");
   const { pos, done } = useBootSequence(bootLines);
   const shouldReduce = useReducedMotion();
+  const navigate = useNavigate();
+
+  const [entries, setEntries] = useState([]);
+  const [cleared, setCleared] = useState(false);
+  const [value, setValue] = useState("");
+  const [histIdx, setHistIdx] = useState(-1); // -1 = live (not browsing)
+
+  const historyRef = useRef([]);
+  const draftRef = useRef(""); // live input stashed while browsing history
+  const ranRef = useRef(new Set()); // commands already run once this session
+  const idRef = useRef(0);
+  const navTimerRef = useRef(null);
+  const inputRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  useEffect(() => () => clearTimeout(navTimerRef.current), []);
+
+  // New output pins the scrollback to the bottom. Reveals animate
+  // opacity/transform only, so scrollHeight is already final here.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [entries]);
+
+  const handleRun = (raw) => {
+    const input = raw.trim();
+    const parsed = parse(input);
+    if (!parsed) return;
+    const result = runCommand(input);
+
+    // Latency as texture: first invocation of a command staggers in,
+    // repeats are instant. Reduced motion is always instant.
+    const instant = Boolean(shouldReduce) || ranRef.current.has(parsed.name);
+    ranRef.current.add(parsed.name);
+    historyRef.current = [...historyRef.current, input].slice(-MAX_HISTORY);
+    setHistIdx(-1);
+    setValue("");
+
+    if (result.action?.type === "clear") {
+      setEntries([]);
+      setCleared(true);
+      return;
+    }
+    setEntries((prev) =>
+      [
+        ...prev,
+        { id: (idRef.current += 1), input, descriptors: result.entries, instant },
+      ].slice(-MAX_ENTRIES)
+    );
+    if (result.action?.type === "toggleLang") toggle();
+    if (result.action?.type === "navigate") {
+      // Let the "opening dossier" line land before the route change.
+      navTimerRef.current = setTimeout(
+        () => navigate(result.action.to),
+        shouldReduce ? 150 : 650
+      );
+    }
+    inputRef.current?.focus();
+  };
+
+  const handleInsert = (text) => {
+    setValue(text);
+    inputRef.current?.focus();
+  };
+
+  const recallHistory = (dir) => {
+    const hist = historyRef.current;
+    if (hist.length === 0) return false;
+    if (dir < 0) {
+      if (histIdx === -1) {
+        draftRef.current = value;
+        setHistIdx(hist.length - 1);
+        setValue(hist[hist.length - 1]);
+      } else if (histIdx > 0) {
+        setHistIdx(histIdx - 1);
+        setValue(hist[histIdx - 1]);
+      }
+      return true;
+    }
+    if (histIdx === -1) return false;
+    if (histIdx >= hist.length - 1) {
+      setHistIdx(-1);
+      setValue(draftRef.current);
+    } else {
+      setHistIdx(histIdx + 1);
+      setValue(hist[histIdx + 1]);
+    }
+    return true;
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (value.trim()) handleRun(value);
+    } else if (e.key === "ArrowUp") {
+      if (recallHistory(-1)) e.preventDefault();
+    } else if (e.key === "ArrowDown") {
+      if (recallHistory(1)) e.preventDefault();
+    } else if (e.key === "Tab" && !e.shiftKey && value.trim()) {
+      // Only hijack Tab mid-command; an empty prompt keeps normal
+      // keyboard navigation so the terminal never traps focus.
+      e.preventDefault();
+      const completed = completeInput(value);
+      if (completed) setValue(completed);
+    }
+  };
+
+  // Tapping anywhere in the terminal body focuses the prompt (mobile
+  // affordance), unless the visitor is selecting text to copy.
+  const focusPrompt = () => {
+    const sel = typeof window !== "undefined" ? window.getSelection() : null;
+    if (sel && !sel.isCollapsed) return;
+    inputRef.current?.focus();
+  };
 
   return (
     <section className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-28">
@@ -115,26 +234,62 @@ export default function TerminalHero() {
           </p>
         </div>
 
+        {/* Fixed-height scrollback: output scrolls inside the window, so the
+            CTAs below never shift as the session grows. */}
         <div
-          role="log"
-          aria-live="polite"
-          className="min-h-[220px] space-y-2.5 px-5 py-6 font-mono text-[13px] leading-relaxed md:min-h-[240px] md:px-7 md:text-[15px]"
+          ref={scrollRef}
+          onClick={focusPrompt}
+          className="h-[300px] cursor-text overflow-y-auto px-5 py-5 font-mono text-[13px] leading-relaxed md:h-[340px] md:px-7 md:text-[14px] [scrollbar-color:rgba(16,185,129,0.35)_transparent] [scrollbar-width:thin]"
         >
-          {bootLines.slice(0, Math.min(pos.line + 1, bootLines.length)).map((line, i) => {
-            const complete = i < pos.line;
-            return (
-              <p key={line} className={TONES[i] ?? "text-white/70"}>
-                {complete ? line : line.slice(0, pos.char)}
-                {!complete && <Cursor />}
-              </p>
-            );
-          })}
+          <div role="log" aria-live="polite" className="space-y-2.5">
+            {!cleared &&
+              bootLines
+                .slice(0, Math.min(pos.line + 1, bootLines.length))
+                .map((line, i) => {
+                  const complete = i < pos.line;
+                  return (
+                    <p key={line} className={TONES[i] ?? "text-white/70"}>
+                      {complete ? line : line.slice(0, pos.char)}
+                      {!complete && <Cursor />}
+                    </p>
+                  );
+                })}
+            {entries.map((entry) => (
+              <TerminalEntry
+                key={entry.id}
+                entry={entry}
+                onRun={handleRun}
+                onInsert={handleInsert}
+              />
+            ))}
+          </div>
+
           {done && (
-            <p className="text-white/45">
-              <span className="text-neon">{">"}</span> {t("hero.awaiting")}
-              <Cursor />
-            </p>
+            <div className="mt-2.5 flex items-center gap-2">
+              <span className="text-neon">{">"}</span>
+              <input
+                ref={inputRef}
+                type="text"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onKeyDown={onKeyDown}
+                aria-label={t("terminal.inputLabel")}
+                placeholder={t("terminal.hint")}
+                maxLength={80}
+                autoComplete="off"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
+                enterKeyHint="go"
+                className="min-h-11 min-w-0 flex-1 bg-transparent text-[16px] text-white/85 caret-neon outline-none [text-shadow:none] placeholder:text-white/25 focus-visible:outline-none md:min-h-0 md:text-[14px]"
+              />
+            </div>
           )}
+        </div>
+
+        <div className="flex items-center justify-between gap-4 border-t border-white/10 px-5 py-2 font-mono text-[10px] tracking-wider text-white/25">
+          <span>{t("terminal.hint")}</span>
+          <span className="hidden sm:block">{t("terminal.historyHint")}</span>
         </div>
       </motion.div>
 
