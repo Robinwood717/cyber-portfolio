@@ -12,8 +12,9 @@
     <meta name="theme-color" content="#050505" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Canonical + absolute OG URLs: set the domain once hosting is chosen.
-         For social scrapers, replace /og.svg with an absolute PNG (og.png). -->
+    <!-- Canonical + absolute OG URLs: once the domain is live, uncomment the
+         canonical link and prefix og:image / twitter:image with the full
+         https://domain (scrapers require absolute image URLs). -->
     <!-- <link rel="canonical" href="https://your-domain.tld/" /> -->
 
     <!-- Open Graph -->
@@ -23,7 +24,13 @@
       property="og:description"
       content="Security & Information Systems Engineer: incident response, system hardening, privacy engineering. University of the Aegean."
     />
-    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image" content="/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Anastasios Soumpakis, Security & Information Systems Engineer: dark terminal-styled card with a neon shield-prompt mark."
+    />
     <meta property="og:locale" content="en_US" />
     <meta property="og:locale:alternate" content="el_GR" />
 
@@ -34,7 +41,7 @@
       name="twitter:description"
       content="Security & Information Systems Engineer: incident response, system hardening, privacy engineering."
     />
-    <meta name="twitter:image" content="/og.svg" />
+    <meta name="twitter:image" content="/og.png" />
 
     <script type="application/ld+json">
       {
