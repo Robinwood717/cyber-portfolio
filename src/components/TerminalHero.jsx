@@ -221,7 +221,6 @@ export default function TerminalHero() {
         style={{
           WebkitBackfaceVisibility: "hidden",
           backfaceVisibility: "hidden",
-          willChange: "transform",
         }}
         className="relative w-full max-w-2xl rounded-xl border border-white/10 bg-white/[0.03] shadow-terminal backdrop-blur-2xl [-webkit-backdrop-filter:blur(40px)]"
       >

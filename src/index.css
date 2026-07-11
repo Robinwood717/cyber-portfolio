@@ -123,7 +123,15 @@
   }
 
   /* Custom neon cursor — dot tracks 1:1, ring eases behind and swells on
-     interactive targets. Toggled on by CustomCursor via .has-custom-cursor. */
+     interactive targets. Toggled on by CustomCursor via .has-custom-cursor.
+
+     The ring's box is fixed at the full (hover) size and centered on the
+     cursor at all times — CustomCursor.jsx's rAF loop writes
+     `transform: translate(...)` on .cursor-ring directly every frame, so the
+     hover swell can't also live on that property (the JS write would clobber
+     it) or on width/height/margin (layout, and would fight the constant
+     centering above). It lives on ::after instead: a same-size overlay that
+     only ever scales, transform-only and untouched by the JS loop. */
   .cursor-dot,
   .cursor-ring {
     display: none; /* hidden until CustomCursor detects a real mouse */
@@ -143,17 +151,22 @@
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.9);
   }
   .cursor-ring {
-    width: 30px;
-    height: 30px;
-    margin: -15px 0 0 -15px;
-    border: 1px solid rgba(16, 185, 129, 0.6);
-    transition: width 0.2s ease, height 0.2s ease, margin 0.2s ease,
-      border-color 0.2s ease, background-color 0.2s ease;
-  }
-  .cursor-ring[data-hover="1"] {
     width: 54px;
     height: 54px;
     margin: -27px 0 0 -27px;
+  }
+  .cursor-ring::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 1px solid rgba(16, 185, 129, 0.6);
+    transform: scale(0.56);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .cursor-ring[data-hover="1"]::after {
+    transform: scale(1);
     border-color: rgba(16, 185, 129, 0.9);
     background-color: rgba(16, 185, 129, 0.08);
   }

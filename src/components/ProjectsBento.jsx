@@ -29,7 +29,6 @@ function CardShell({ index, className = "", children }) {
       style={{
         WebkitBackfaceVisibility: "hidden",
         backfaceVisibility: "hidden",
-        willChange: "transform",
       }}
       className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)] md:p-8 ${className}`}
     >
