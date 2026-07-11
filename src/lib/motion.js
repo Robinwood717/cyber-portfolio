@@ -1,4 +1,4 @@
-export const SPRING = { type: "spring", stiffness: 100, damping: 20 };
+export const SPRING = { type: "spring", stiffness: 170, damping: 26 };
 export const SPRING_SNAPPY = { type: "spring", stiffness: 260, damping: 20 };
 
 export const fadeUp = {
@@ -8,7 +8,7 @@ export const fadeUp = {
 
 export const stagger = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
+  visible: { transition: { staggerChildren: 0.045, delayChildren: 0.02 } },
 };
 
 export const bentoCard = {

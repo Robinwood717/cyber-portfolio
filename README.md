@@ -80,6 +80,6 @@ src/
 
 - Background `#050505` · structure `#1a1a1a` · text `#ffffff` · accent `#10b981`
 - Space Grotesk (display) · JetBrains Mono (everything technical)
-- All entrance/hover motion: `spring { stiffness: 100–260, damping: 20 }`
+- All entrance/hover motion: `spring { stiffness: 170–260, damping: 20–26 }`
 - Reduced motion respected via `MotionConfig reducedMotion="user"`, CSS media
   query, and `matchMedia` guards on typewriter/scramble/kill-chain effects.
