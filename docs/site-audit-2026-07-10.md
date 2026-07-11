@@ -1,9 +1,9 @@
 # Site Audit — Consolidated Report (2026-07-10)
 
-Branch: `round-2-overhaul` · Produced by `/improve-site` from five parallel subagent audits:
-**security-auditor**, **ui-ux-auditor**, **perf-optimizer**, **seo-a11y-auditor**, **code-quality**.
+Branch: `round-2-overhaul` · Consolidated from five specialized audit passes:
+security, UI/UX, performance, SEO/accessibility, and code quality.
 
-Findings are deduplicated (source agents noted per finding) and globally prioritized:
+Findings are deduplicated (source passes noted per finding) and globally prioritized:
 Security blockers → user-visible broken → UI/UX critical → performance top-3 → SEO/a11y → code quality → nice-to-haves.
 
 **Security verdict: FIX FIRST** (F2). App code itself is clean — no XSS paths, no secrets in the repo or git history, clean `npm audit` on production deps, terminal input and GitHub feed defensively built.
@@ -25,7 +25,7 @@ The Experience intro shown to every visitor (both languages) literally says time
 *(Done: `public/_headers` mirrors `vercel.json`; `interest-cohort`/`browsing-topics` added to both; README documents GH Pages as unsupported for the hardened deploy.)*
 **Severity:** High (security ship blocker) · **Source:** security (verdict driver), perf (#8)
 **Files:** `vercel.json:4-33` (only header source), missing `public/_headers`, `README.md:65-69`, `public/_redirects`, `package.json:9` (`postbuild` 404.html for GH Pages)
-The CSP/HSTS/XFO/COOP/CORP set from commit `11cc1dd` applies only on Vercel. Netlify (`_redirects` present) and GitHub Pages (postbuild step present) deploys would ship **zero** hardening — GH Pages can't serve custom headers at all. A `curl -I` against a non-Vercel deploy would contradict the site's own security branding.
+The CSP/HSTS/XFO/COOP/CORP set from the earlier hardening commit applies only on Vercel. Netlify (`_redirects` present) and GitHub Pages (postbuild step present) deploys would ship **zero** hardening — GH Pages can't serve custom headers at all. A `curl -I` against a non-Vercel deploy would contradict the site's own security branding.
 **Fix:** Either add `public/_headers` mirroring `vercel.json` (Netlify parity) and document GH Pages as unsupported, **or** pin the deploy target to Vercel and remove the vestigial `_redirects` + `postbuild` step. Bonus hardening: HSTS `preload`, `browsing-topics=()`/`interest-cohort=()` in Permissions-Policy.
 
 ### [-] F3 — OG/Twitter image URLs relative (broken share previews) + canonical commented out
