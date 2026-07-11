@@ -1,7 +1,7 @@
 import { m, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SectionHeader from "./SectionHeader";
-import { bentoCard, glareSweep, stagger } from "../lib/motion";
+import { bentoCard, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
 import { PROJECTS } from "../data/projects";
 
@@ -37,14 +37,7 @@ function CardShell({ index, className = "", children }) {
         [{index}]
       </span>
       <div className="relative z-10">{children}</div>
-      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 shadow-glow ring-1 ring-neon/60 transition-opacity duration-500 group-hover:opacity-100" />
-      <m.div
-        aria-hidden="true"
-        variants={glareSweep}
-        className="pointer-events-none absolute inset-y-0 left-0 z-20 w-3/5"
-      >
-        <div className="h-full w-full -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
-      </m.div>
+      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 shadow-glow ring-1 ring-neon/60 transition-opacity duration-200 group-hover:opacity-100" />
     </m.article>
   );
 }
