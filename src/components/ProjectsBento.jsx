@@ -129,8 +129,9 @@ function TelemetryCard({ index, t }) {
     // stay adjacent in DOM (and single-column) order.
     <CardShell index={index} className="lg:col-start-3 lg:row-start-1">
       <div className="flex items-center gap-2">
+        {/* Static dot: this panel's numbers are fixture data, not a live
+            feed, so no pulse — an honest status indicator, not a promise. */}
         <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-neon/60" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-neon" />
         </span>
         <p className="font-mono text-[10px] tracking-[0.3em] text-neon">

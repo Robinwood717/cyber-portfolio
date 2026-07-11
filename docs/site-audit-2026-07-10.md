@@ -183,6 +183,7 @@ ProjectPage, DossierModal, CommandPalette all gate homepage first paint; no vend
 **Files:** `vercel.json:27-32` (only `/fonts/` covered) — add `/assets/(.*)` block with 1-year immutable.
 
 ### [ ] F26 — CommandCenter starts 3 timers + GitHub fetch on mount regardless of scroll position
+*(Partially addressed in the motion pass: PerimeterMap ping and KillChain packet are viewport-gated, sparkline slowed to 1.5s. ThreatFeed/Session/Sparkline intervals and the GitHub fetch still start on mount.)*
 **Severity:** Medium · **Source:** perf
 **Files:** `src/components/CommandCenter.jsx:61-70,123-126,156-162`, `src/hooks/useGithubActivity.js:95`
 **Fix:** Arm intervals/fetch via IntersectionObserver or the existing `whileInView` signal.
@@ -232,7 +233,8 @@ ProjectPage, DossierModal, CommandPalette all gate homepage first paint; no vend
 
 ## Band G — Nice-to-haves & judgment calls
 
-### [ ] F36 — "LIVE TELEMETRY" card: pulsing live-dot on fully static hardcoded data
+### [x] F36 — "LIVE TELEMETRY" card: pulsing live-dot on fully static hardcoded data
+*(Done in the motion pass: animate-ping removed; static dot remains.)*
 **Severity:** Medium (honesty of framing) · **Source:** ui-ux
 **Files:** `src/components/ProjectsBento.jsx:132-158`, `src/i18n/en.js:163-169` — drop the pulse or add "simulated" framing.
 

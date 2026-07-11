@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { m, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion, useInView } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import GithubUplink from "./GithubUplink";
 import { fadeUp, stagger } from "../lib/motion";
@@ -26,7 +26,10 @@ function formatUptime(ms) {
   return `${d}D ${pad(h)}:${pad(mins)}:${pad(s)}`;
 }
 
-function Panel({ label, live = true, className = "", children }) {
+// `live` shows the neon status dot; `pulse` layers the animate-ping ring on
+// top of it. Only one panel (Threat Feed) gets the pulse — a single moving
+// light reads as "streaming"; six in sync just reads as noise.
+function Panel({ label, live = true, pulse = false, className = "", children }) {
   return (
     <m.article
       variants={fadeUp}
@@ -39,7 +42,9 @@ function Panel({ label, live = true, className = "", children }) {
       <div className="flex items-center gap-2">
         {live && (
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-neon/60" />
+            {pulse && (
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-neon/60" />
+            )}
             <span className="relative inline-flex h-2 w-2 rounded-full bg-neon" />
           </span>
         )}
@@ -156,8 +161,14 @@ function TrafficSparkline({ frozen }) {
     if (frozen) return undefined;
     const id = setInterval(() => {
       if (document.visibilityState === "hidden") return;
-      setPoints((prev) => [...prev.slice(1), 6 + Math.random() * 22]);
-    }, 900);
+      // Drift from the previous value instead of a fresh random draw each
+      // tick, so the line reads as traffic rather than a twitchy jump.
+      setPoints((prev) => {
+        const last = prev[prev.length - 1];
+        const next = Math.min(28, Math.max(6, last + (Math.random() - 0.5) * 6));
+        return [...prev.slice(1), next];
+      });
+    }, 1500);
     return () => clearInterval(id);
   }, [frozen]);
 
@@ -191,7 +202,7 @@ function TrafficSparkline({ frozen }) {
 }
 
 /* PERIMETER MAP — grid, home node, ping rings. */
-function PerimeterMap({ t, frozen }) {
+function PerimeterMap({ t, frozen, inView }) {
   return (
     <div className="relative">
       <svg viewBox="0 0 200 110" className="w-full" aria-hidden="true">
@@ -205,7 +216,9 @@ function PerimeterMap({ t, frozen }) {
         <path d="M176 26 Q150 48 128 62" fill="none" stroke="#10b981" strokeWidth="0.8" opacity="0.3" strokeDasharray="3 3" />
         <circle cx="30" cy="78" r="2.5" fill="#febc2e" opacity="0.8" />
         <circle cx="176" cy="26" r="2.5" fill="#febc2e" opacity="0.6" />
-        {!frozen && (
+        {/* Only rendered while the section is actually on screen — no point
+            paying for an infinite SMIL loop nobody is looking at. */}
+        {!frozen && inView && (
           <>
             <circle cx="128" cy="62" r="8" fill="none" stroke="#10b981" opacity="0.5">
               <animate attributeName="r" values="4;16" dur="2.4s" repeatCount="indefinite" />
@@ -227,8 +240,19 @@ export default function CommandCenter() {
   const { t } = useI18n();
   const frozen = !!shouldReduce;
 
+  // Gates the perimeter map's looping ping ring so it only runs while the
+  // section is actually on screen (see PerimeterMap). SSR-safe: useInView
+  // returns false until the client observes the node, no window access
+  // during render.
+  const sectionRef = useRef(null);
+  const sectionInView = useInView(sectionRef, { once: false, margin: "-100px" });
+
   return (
-    <section id="commandcenter" className="relative border-t border-gridline scroll-mt-24">
+    <section
+      id="commandcenter"
+      ref={sectionRef}
+      className="relative border-t border-gridline scroll-mt-24"
+    >
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
         <SectionHeader index="05" label={t("soc.label")} title={t("soc.title")} />
 
@@ -249,7 +273,7 @@ export default function CommandCenter() {
           viewport={{ once: true, margin: "-60px" }}
           className="mt-14 grid grid-cols-1 items-start gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3"
         >
-          <Panel label={t("soc.threatFeed")} className="md:col-span-2">
+          <Panel label={t("soc.threatFeed")} className="md:col-span-2" pulse>
             <ThreatFeed lines={t("soc.feed")} frozen={frozen} />
           </Panel>
           <Panel label={t("soc.posture")}>
@@ -265,7 +289,7 @@ export default function CommandCenter() {
             <TrafficSparkline frozen={frozen} />
           </Panel>
           <Panel label={t("soc.map")}>
-            <PerimeterMap t={t} frozen={frozen} />
+            <PerimeterMap t={t} frozen={frozen} inView={sectionInView} />
           </Panel>
         </m.div>
       </div>

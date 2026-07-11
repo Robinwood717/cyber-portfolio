@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { m, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion, useInView } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import { SPRING, fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
@@ -35,6 +35,11 @@ export default function KillChain() {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
+  // The packet only travels while the chain is actually on screen — no
+  // infinite loop running behind the scenes for a section nobody's looking
+  // at. SSR-safe: useInView reports false until the client observes it.
+  const trackInView = useInView(trackRef, { once: false, margin: "-100px" });
 
   return (
     <section id="killchain" className="relative border-t border-gridline scroll-mt-24">
@@ -76,7 +81,7 @@ export default function KillChain() {
               transition={{ duration: 1.1, ease: "easeInOut" }}
             />
             {/* travelling packet — transform-only loop along the measured track */}
-            {!shouldReduce && trackW > 0 && (
+            {!shouldReduce && trackW > 0 && trackInView && (
               <m.span
                 aria-hidden="true"
                 className="absolute left-0 top-5 z-10 -ml-1 -mt-1 h-2 w-2 rounded-full bg-neon [box-shadow:0_0_12px_4px_rgba(16,185,129,0.6)]"
