@@ -1,5 +1,6 @@
 export const SPRING = { type: "spring", stiffness: 170, damping: 26 };
 export const SPRING_SNAPPY = { type: "spring", stiffness: 260, damping: 20 };
+export const SPRING_MODAL = { type: "spring", stiffness: 280, damping: 30 };
 
 export const fadeUp = {
   hidden: { opacity: 0, y: 44 },

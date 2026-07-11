@@ -5,6 +5,7 @@ import { useI18n } from "../i18n/LanguageContext";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import { SITE } from "../data/site";
 import { PROJECTS } from "../data/projects";
+import { SPRING_MODAL } from "../lib/motion";
 
 export default function CommandPalette({ open, onClose }) {
   const shouldReduce = useReducedMotion();
@@ -135,9 +136,8 @@ export default function CommandPalette({ open, onClose }) {
         <m.div
           className="fixed inset-0 z-[95] flex items-start justify-center p-4 pt-[12vh]"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
+          animate={{ opacity: 1, transition: { duration: 0.15 } }}
+          exit={{ opacity: 0, transition: { duration: 0.12 } }}
         >
           <button
             type="button"
@@ -152,9 +152,17 @@ export default function CommandPalette({ open, onClose }) {
             aria-modal="true"
             aria-label={t("palette.placeholder")}
             initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: -12, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={shouldReduce ? { opacity: 0 } : { opacity: 0, y: -12, scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 260, damping: 24 }}
+            animate={{ opacity: 1, y: 0, scale: 1, transition: SPRING_MODAL }}
+            exit={
+              shouldReduce
+                ? { opacity: 0, transition: { duration: 0.12 } }
+                : {
+                    opacity: 0,
+                    y: -12,
+                    scale: 0.98,
+                    transition: { duration: 0.16, ease: [0.4, 0, 1, 1] },
+                  }
+            }
             onKeyDown={onKeyDown}
             className="relative z-10 w-full max-w-xl overflow-hidden rounded-xl border border-white/10 bg-[#0a0a0a]/95 shadow-terminal backdrop-blur-2xl"
           >

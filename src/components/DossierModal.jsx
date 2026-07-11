@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { m, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useI18n } from "../i18n/LanguageContext";
 import { useFocusTrap } from "../hooks/useFocusTrap";
+import { SPRING_MODAL } from "../lib/motion";
 
 export default function DossierModal({ open, onClose, project }) {
   const shouldReduce = useReducedMotion();
@@ -25,9 +26,8 @@ export default function DossierModal({ open, onClose, project }) {
         <m.div
           className="fixed inset-0 z-[90] flex items-start justify-center overflow-y-auto p-4 sm:p-8"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          animate={{ opacity: 1, transition: { duration: 0.2 } }}
+          exit={{ opacity: 0, transition: { duration: 0.12 } }}
         >
           {/* backdrop */}
           <button
@@ -43,9 +43,17 @@ export default function DossierModal({ open, onClose, project }) {
             aria-modal="true"
             aria-label={`${project.title}: ${t("project.dossier.header")}`}
             initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 220, damping: 26 }}
+            animate={{ opacity: 1, y: 0, scale: 1, transition: SPRING_MODAL }}
+            exit={
+              shouldReduce
+                ? { opacity: 0, transition: { duration: 0.14 } }
+                : {
+                    opacity: 0,
+                    y: 24,
+                    scale: 0.98,
+                    transition: { duration: 0.18, ease: [0.4, 0, 1, 1] },
+                  }
+            }
             className="dossier-scanlines relative z-10 my-auto w-full max-w-2xl overflow-hidden rounded-lg border border-red-500/25 bg-[#020202] shadow-[0_0_60px_rgba(0,0,0,0.9),0_0_40px_rgba(248,113,113,0.08)]"
           >
             {/* header bar */}
