@@ -238,7 +238,8 @@ ProjectPage, DossierModal, CommandPalette all gate homepage first paint; no vend
 **Severity:** Medium (honesty of framing) · **Source:** ui-ux
 **Files:** `src/components/ProjectsBento.jsx:132-158`, `src/i18n/en.js:163-169` — drop the pulse or add "simulated" framing.
 
-### [ ] F37 — Cumulative ambient-motion load risks "effects showcase" impression
+### [x] F37 — Cumulative ambient-motion load risks "effects showcase" impression
+*(Substantially closed by the dedicated motion pass: glare sweep removed, six pulse dots reduced to one, off-screen loops viewport-gated, sparkline calmed, magnetic pull softened. Terminal boot + kill chain kept as the two signature moments.)*
 **Severity:** Medium (design judgment) · **Source:** ui-ux
 Nine simultaneous ambient systems; recommendation is keep 2–3 signature moments (terminal, kill chain), mute the rest. *Owner taste call.*
 

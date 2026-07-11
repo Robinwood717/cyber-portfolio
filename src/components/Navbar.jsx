@@ -74,7 +74,7 @@ export default function Navbar({ onOpenPalette }) {
               <span className={lang === "el" ? "text-neon" : ""}>ΕΛ</span>
             </button>
 
-            <MagneticButton strength={0.3}>
+            <MagneticButton>
               <Link
                 to="/#contact"
                 className="flex min-h-[44px] items-center border border-neon/40 px-3 text-neon transition-all duration-200 hover:bg-neon/10 hover:shadow-glow-sm active:scale-[0.97]"
