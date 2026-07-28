@@ -1,4 +1,10 @@
 node_modules
 dist
+dist-ssr
 .DS_Store
 *.local
+
+# Raw 3D source assets (.obj/.mtl + unoptimized intermediate .glb). These are
+# multi-MB and never shipped — the pipeline output lives in public/models/.
+# See the 3D integration report for conversion steps to regenerate.
+assets-src/

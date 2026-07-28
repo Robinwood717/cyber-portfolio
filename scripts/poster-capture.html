@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>poster harness (temp)</title>
+  <style>body { background: #050505; color: #10b981; font-family: monospace; }</style>
+</head>
+<body>
+  <pre id="log">booting…</pre>
+  <script type="module">
+    // TEMPORARY capture harness — deleted after the posters are regenerated.
+    // Replicates Scene3D.jsx's exact lights/materials/framing so the captured
+    // renders match what the live WebGL canvas shows, then POSTs each PNG to
+    // the scratchpad save-server on :5190.
+    import * as THREE from "three";
+    import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+    import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
+    import { NEON_HEX, ACCENT_MATERIALS } from "/src/lib/modelTheme.js";
+
+    const log = (m) => { document.getElementById("log").textContent += "\n" + m; };
+    const W = 960, H = 720, FOV = 32;
+    const NEON = new THREE.Color(NEON_HEX);
+    const SLUGS = ["cipher-gate", "data-core", "quantum-lock"];
+
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true, antialias: true, preserveDrawingBuffer: true,
+    });
+    renderer.setPixelRatio(1);
+    renderer.setSize(W, H);
+    document.body.appendChild(renderer.domElement);
+
+    const loader = new GLTFLoader();
+    loader.setMeshoptDecoder(MeshoptDecoder);
+
+    async function capture(slug) {
+      const gltf = await loader.loadAsync(`/public/models/${slug}.glb`);
+      const scene = new THREE.Scene();
+      const model = gltf.scene;
+      model.traverse((child) => {
+        if (!child.isMesh || !child.material) return;
+        const mat = child.material;
+        mat.toneMapped = false;
+        if (ACCENT_MATERIALS.includes(mat.name)) {
+          mat.emissive = NEON.clone();
+          mat.emissiveIntensity = 0.85;
+        }
+        if (typeof mat.roughness === "number") mat.roughness = Math.min(mat.roughness, 0.55);
+      });
+
+      const amb = new THREE.AmbientLight(0xa9c9bd, 0.55);
+      const key = new THREE.DirectionalLight(0xeafff6, 1.15);
+      key.position.set(3, 4, 2);
+      const rim = new THREE.DirectionalLight(NEON_HEX, 0.6);
+      rim.position.set(-2.5, -1.5, -3);
+      scene.add(amb, key, rim, model);
+
+      // Same auto-framing math as Scene3D's useAutoFrame.
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const radius = Math.max(size.x, size.y, size.z, 0.001) * 0.5;
+      model.position.sub(center);
+
+      const camera = new THREE.PerspectiveCamera(FOV, W / H, 0.01, 1000);
+      const fovRad = (FOV * Math.PI) / 180;
+      const distance = (radius / Math.sin(fovRad / 2)) * 1.5;
+      camera.position.set(distance * 0.18, radius * 0.35, distance);
+      camera.near = Math.max(distance / 100, 0.01);
+      camera.far = distance * 12;
+      camera.updateProjectionMatrix();
+      camera.lookAt(0, 0, 0);
+
+      renderer.render(scene, camera);
+      const blob = await new Promise((res) => renderer.domElement.toBlob(res, "image/png"));
+      const resp = await fetch(`http://localhost:5190/save/${slug}`, {
+        method: "POST",
+        headers: { "content-type": "application/octet-stream" },
+        body: blob,
+      });
+      log(`${slug}: rendered ${blob.size} bytes, save ${resp.status}`);
+      return resp.ok;
+    }
+
+    window.__posterResult = "running";
+    try {
+      let allOk = true;
+      for (const slug of SLUGS) allOk = (await capture(slug)) && allOk;
+      window.__posterResult = allOk ? "done" : "save-failed";
+      log("RESULT: " + window.__posterResult);
+    } catch (e) {
+      window.__posterResult = "error: " + (e && e.message);
+      log(window.__posterResult);
+    }
+  </script>
+</body>
+</html>
