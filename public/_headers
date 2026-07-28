@@ -11,6 +11,11 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
 
+# Vite content-hashes every filename here, so a changed file is a changed URL
+# and this can never serve a stale bundle.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
