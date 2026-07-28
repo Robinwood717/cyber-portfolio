@@ -216,7 +216,11 @@ export const el = {
     openCaseFile: "[ ΑΝΟΙΓΜΑ ΦΑΚΕΛΟΥ ]",
     viewOnGithub: "ΠΡΟΒΟΛΗ ΣΤΟ GITHUB ↗",
     notFound: "Ο φάκελος υπόθεσης δεν βρέθηκε.",
-    modelCaption: "CIPHER-GATE // ΣΧΗΜΑ ΠΡΟΣΒΑΣΗΣ",
+    // Keyed by project slug: each dossier's set piece names itself.
+    modelCaption: {
+      "dlp-scanner": "CIPHER-GATE // ΣΧΗΜΑ ΠΡΟΣΒΑΣΗΣ",
+      "mitm-lab": "MITM-INTERCEPT // ΑΝΑΛΥΣΗ ΔΙΑΔΡΟΜΗΣ",
+    },
     sections: {
       overview: "ΕΠΙΣΚΟΠΗΣΗ",
       architecture: "ΑΡΧΙΤΕΚΤΟΝΙΚΗ",

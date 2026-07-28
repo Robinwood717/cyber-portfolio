@@ -11,14 +11,19 @@ import { ACCENT_MATERIALS, IDLE_ROTATION_SECONDS } from "../lib/modelTheme";
 // Behind the [ OPEN CASE FILE ] trigger — loads on first open.
 const DossierModal = lazy(() => import("../components/DossierModal"));
 
-// Only the DLP Scanner dossier gets the cipher-gate set piece (see the 3D
-// placement proposal: a gate motif for the case study about gating what
-// data is allowed to leave). Every other flagship page's header is
-// unaffected by this file's layout changes.
+// A dossier only earns a set piece when the motif says something about the
+// case itself, rather than decorating it: a gate for the study about gating
+// what data may leave, an intercepted link for the study about sitting in
+// the middle of one. Dossiers without a motif that specific stay bare — the
+// slot is deliberately not filled by default.
 const MODEL_BY_SLUG = {
   "dlp-scanner": {
     modelUrl: "/models/cipher-gate.glb",
     poster: "/models/posters/cipher-gate.webp",
+  },
+  "mitm-lab": {
+    modelUrl: "/models/mitm-intercept.glb",
+    poster: "/models/posters/mitm-intercept.webp",
   },
 };
 
@@ -145,7 +150,7 @@ export default function ProjectPage() {
               />
             </div>
             <p className="mt-3 text-center font-mono text-[10px] tracking-[0.25em] text-white/50 lg:text-left">
-              {t("project.modelCaption")}
+              {t(`project.modelCaption.${project.slug}`)}
             </p>
           </div>
         )}

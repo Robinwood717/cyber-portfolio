@@ -211,7 +211,11 @@ export const en = {
     openCaseFile: "[ OPEN CASE FILE ]",
     viewOnGithub: "VIEW ON GITHUB ↗",
     notFound: "Case file not found.",
-    modelCaption: "CIPHER-GATE // ACCESS SCHEMATIC",
+    // Keyed by project slug: each dossier's set piece names itself.
+    modelCaption: {
+      "dlp-scanner": "CIPHER-GATE // ACCESS SCHEMATIC",
+      "mitm-lab": "MITM-INTERCEPT // PATH ANALYSIS",
+    },
     sections: {
       overview: "OVERVIEW",
       architecture: "ARCHITECTURE",
