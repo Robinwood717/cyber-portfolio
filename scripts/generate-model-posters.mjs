@@ -72,6 +72,7 @@ const MODELS = [
   { slug: "cipher-gate", codename: "CIPHER-GATE", node: "NODE.01 // ACCESS" },
   { slug: "data-core", codename: "DATA-CORE", node: "NODE.02 // TELEMETRY" },
   { slug: "quantum-lock", codename: "QUANTUM-LOCK", node: "NODE.03 // CRYPTO" },
+  { slug: "mitm-intercept", codename: "MITM-INTERCEPT", node: "NODE.04 // INTERCEPT" },
 ];
 
 const fontFiles = [

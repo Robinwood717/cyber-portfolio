@@ -8,3 +8,8 @@ dist-ssr
 # multi-MB and never shipped — the pipeline output lives in public/models/.
 # See the 3D integration report for conversion steps to regenerate.
 assets-src/
+
+# Poster capture landing zone (scripts/poster-save-server.mjs writes here).
+# Intermediates only — the captures are copied to assets-src/renders/ and
+# composited into public/models/posters/.
+scripts/renders/
