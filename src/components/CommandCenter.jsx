@@ -101,7 +101,10 @@ function ThreatFeed({ lines, frozen }) {
       {entries.map((entry, i) => (
         <m.p
           key={entry.key}
-          initial={frozen || i > 0 ? false : { opacity: 0, x: -10 }}
+          // `frozen` tracks reduced motion, which the server cannot see, so it
+          // must not decide markup. `i > 0` is deterministic and still keeps
+          // the reveal to the newest row only.
+          initial={i > 0 ? false : { opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           className={`flex gap-3 border-b border-white/5 pb-1.5 ${i === 0 ? "text-white/80" : "text-white/55"}`}
         >
@@ -127,7 +130,11 @@ function PostureGauges({ gauges, frozen }) {
           <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/5">
             {/* fill via scaleX (compositor-only) rather than width (layout) */}
             <m.div
-              initial={frozen ? { scaleX: value / 100 } : { scaleX: 0 }}
+              // Same rule: one starting state for server and client alike.
+              // MotionConfig reducedMotion="user" drops the scaleX tween for
+              // reduced-motion readers, so the bar lands on its value without
+              // sweeping there.
+              initial={{ scaleX: 0 }}
               whileInView={{ scaleX: value / 100 }}
               viewport={{ once: true }}
               transition={{ duration: 1.1, ease: "easeOut", delay: 0.15 }}
@@ -278,7 +285,7 @@ export default function CommandCenter() {
         <SectionHeader index="05" label={t("soc.label")} title={t("soc.title")} />
 
         <m.p
-          initial={shouldReduce ? false : { opacity: 0 }}
+          initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
@@ -289,7 +296,7 @@ export default function CommandCenter() {
 
         <m.div
           variants={stagger}
-          initial={shouldReduce ? false : "hidden"}
+          initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
           className="mt-14 grid grid-cols-1 items-start gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3"

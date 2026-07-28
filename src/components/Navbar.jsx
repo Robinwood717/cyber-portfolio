@@ -26,7 +26,7 @@ export default function Navbar({ onOpenPalette }) {
   return (
     <>
       <m.header
-        initial={shouldReduce ? false : { y: -64, opacity: 0 }}
+        initial={{ y: -64, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ ...SPRING, delay: 0.2 }}
         style={{ WebkitBackfaceVisibility: "hidden", backfaceVisibility: "hidden" }}

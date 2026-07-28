@@ -48,7 +48,7 @@ export default function KillChain() {
 
         <m.div
           variants={stagger}
-          initial={shouldReduce ? false : "hidden"}
+          initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
         >
@@ -75,7 +75,7 @@ export default function KillChain() {
             <m.div
               aria-hidden="true"
               className="absolute left-0 top-5 h-px w-full origin-left bg-gradient-to-r from-red-500/70 via-amber-400/60 to-neon"
-              initial={shouldReduce ? { scaleX: 1 } : { scaleX: 0 }}
+              initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1.1, ease: "easeInOut" }}
@@ -96,10 +96,16 @@ export default function KillChain() {
                 return (
                   <li key={s.id} className="flex flex-1 flex-col items-center text-center last:flex-none">
                     <span className="relative flex h-10 w-10 items-center justify-center">
-                      {active && !shouldReduce && (
+                      {/* Suppressed for reduced motion in CSS rather than by
+                          dropping the node: `selected` starts at 0, so the
+                          server always rendered this ring while a
+                          reduced-motion client omitted it — a hydration
+                          mismatch. The media query costs nothing and cannot
+                          disagree with the server. */}
+                      {active && (
                         <span
                           aria-hidden="true"
-                          className={`absolute inline-flex h-full w-full animate-ping rounded-full ${
+                          className={`absolute inline-flex h-full w-full animate-ping rounded-full motion-reduce:hidden ${
                             s.kind === "defense" ? "bg-neon/25" : "bg-red-500/25"
                           }`}
                         />
@@ -176,7 +182,7 @@ export default function KillChain() {
                 variant-driven parent. */}
             <m.div
               key={stage.id}
-              initial={shouldReduce ? false : { opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...SPRING }}
             >

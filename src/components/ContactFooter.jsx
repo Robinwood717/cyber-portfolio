@@ -102,7 +102,7 @@ export default function ContactFooter() {
 
         <m.div
           variants={stagger}
-          initial={shouldReduce ? false : "hidden"}
+          initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
         >

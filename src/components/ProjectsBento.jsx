@@ -166,7 +166,7 @@ export default function ProjectsBento() {
 
         <m.div
           variants={stagger}
-          initial={shouldReduce ? false : "hidden"}
+          initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
           className="mt-14 grid grid-cols-1 items-start gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3"

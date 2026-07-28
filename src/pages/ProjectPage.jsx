@@ -71,7 +71,7 @@ export default function ProjectPage() {
       <div className={model ? "lg:flex lg:items-start lg:gap-10" : undefined}>
         <m.div
           variants={stagger}
-          initial={shouldReduce ? false : "hidden"}
+          initial="hidden"
           animate="visible"
           className={`mt-8 ${model ? "lg:min-w-0 lg:flex-1" : ""}`}
         >
@@ -153,7 +153,7 @@ export default function ProjectPage() {
 
       {project.authorized && (
         <m.p
-          initial={shouldReduce ? false : { opacity: 0 }}
+          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
           className="mt-10 rounded-lg border border-amber-400/25 bg-amber-400/[0.04] p-4 font-mono text-xs leading-relaxed text-amber-200/70"
@@ -164,7 +164,7 @@ export default function ProjectPage() {
 
       <m.div
         variants={stagger}
-        initial={shouldReduce ? false : "hidden"}
+        initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-40px" }}
         className="mt-14 space-y-12"

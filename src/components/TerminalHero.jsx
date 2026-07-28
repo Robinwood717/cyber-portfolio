@@ -207,7 +207,7 @@ export default function TerminalHero() {
           independent of the boot animation. */}
       <m.div
         variants={stagger}
-        initial={shouldReduce ? false : "hidden"}
+        initial="hidden"
         animate="visible"
         className="relative mb-9 flex flex-col items-center text-center"
       >
@@ -226,7 +226,7 @@ export default function TerminalHero() {
       </m.div>
 
       <m.div
-        initial={shouldReduce ? false : { opacity: 0, y: 36, scale: 0.97 }}
+        initial={{ opacity: 0, y: 36, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ ...SPRING, delay: 0.1 }}
         style={{
@@ -310,7 +310,7 @@ export default function TerminalHero() {
 
       <m.div
         variants={stagger}
-        initial={shouldReduce ? false : "hidden"}
+        initial="hidden"
         animate={done || shouldReduce ? "visible" : "hidden"}
         className="relative mt-10 flex flex-col items-center gap-8"
       >

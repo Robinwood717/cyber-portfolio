@@ -15,7 +15,7 @@ export default function Methodology() {
 
         <m.div
           variants={stagger}
-          initial={shouldReduce ? false : "hidden"}
+          initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
           className="space-y-8"

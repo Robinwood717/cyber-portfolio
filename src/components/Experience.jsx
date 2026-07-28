@@ -90,7 +90,7 @@ export default function Experience() {
         <SectionHeader index="03" label={t("experience.label")} title={t("experience.title")} />
 
         <m.p
-          initial={shouldReduce ? false : { opacity: 0 }}
+          initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
@@ -101,7 +101,7 @@ export default function Experience() {
 
         <m.ol
           variants={stagger}
-          initial={shouldReduce ? false : "hidden"}
+          initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
           className="relative mt-14 space-y-12"
@@ -110,7 +110,7 @@ export default function Experience() {
           <m.span
             aria-hidden="true"
             style={{ left: SPINE }}
-            initial={shouldReduce ? false : { scaleY: 0 }}
+            initial={{ scaleY: 0 }}
             whileInView={{ scaleY: 1 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 1.2, ease: "easeOut" }}
