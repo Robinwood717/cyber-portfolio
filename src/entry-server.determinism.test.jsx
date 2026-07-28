@@ -33,22 +33,37 @@ async function renderAt(epochMs, url) {
 const T1 = Date.UTC(2026, 0, 15, 9, 13, 35);
 const T2 = Date.UTC(2026, 0, 15, 17, 47, 2); // same day, very different clock
 
+// Each case resets the module registry and re-imports the whole app graph
+// twice, so these are seconds-scale by construction and drift with machine
+// load. The default 5s ceiling was close enough to trip on a slow run, which
+// reads as a determinism failure when it is only a stopwatch. Give them room;
+// a genuine mismatch still fails on the assertion, not the clock.
+const SSR_TIMEOUT_MS = 30_000;
+
 describe("prerendered markup is time-independent (hydration safety)", () => {
   afterEach(() => {
     vi.useRealTimers();
   });
 
-  it("renders the homepage identically regardless of build time", async () => {
-    const a = await renderAt(T1, "/");
-    const b = await renderAt(T2, "/");
-    expect(a).toBe(b);
-  });
+  it(
+    "renders the homepage identically regardless of build time",
+    async () => {
+      const a = await renderAt(T1, "/");
+      const b = await renderAt(T2, "/");
+      expect(a).toBe(b);
+    },
+    SSR_TIMEOUT_MS
+  );
 
-  it("renders a project dossier identically regardless of build time", async () => {
-    const a = await renderAt(T1, "/ops/dlp-scanner");
-    const b = await renderAt(T2, "/ops/dlp-scanner");
-    expect(a).toBe(b);
-  });
+  it(
+    "renders a project dossier identically regardless of build time",
+    async () => {
+      const a = await renderAt(T1, "/ops/dlp-scanner");
+      const b = await renderAt(T2, "/ops/dlp-scanner");
+      expect(a).toBe(b);
+    },
+    SSR_TIMEOUT_MS
+  );
 
   it("bakes no wall-clock reading into the homepage markup", async () => {
     const html = await renderAt(T1, "/");
@@ -58,7 +73,7 @@ describe("prerendered markup is time-independent (hydration safety)", () => {
     const fromBuildClock = clocks.filter((c) => c.startsWith("09:"));
     expect(fromBuildClock).toEqual([]);
     expect(html).toContain("--:--:--");
-  });
+  }, SSR_TIMEOUT_MS);
 });
 
 // prefers-reduced-motion is a client-only signal — the prerender has no
