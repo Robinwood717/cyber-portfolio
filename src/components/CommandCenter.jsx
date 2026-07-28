@@ -2,8 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { m, useReducedMotion, useInView } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import GithubUplink from "./GithubUplink";
+import ModelViewport from "./ModelViewport";
 import { fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
+import { ACCENT_MATERIALS, IDLE_ROTATION_SECONDS } from "../lib/modelTheme";
 
 // Simulated uptime baseline so the counter reads like a long-lived node
 // rather than starting at zero on every visit.
@@ -290,6 +292,21 @@ export default function CommandCenter() {
           </Panel>
           <Panel label={t("soc.map")}>
             <PerimeterMap t={t} frozen={frozen} inView={sectionInView} />
+          </Panel>
+          {/* Decorative set piece, not a telemetry readout (hence live={false},
+              same honesty convention as the fixture-data panels above) — a
+              slow-idle-rotating render of the repo's "data core", closing the
+              grid as one wide panel so it never crowds the live readouts. */}
+          <Panel label={t("soc.dataCore")} live={false} className="md:col-span-2 lg:col-span-3">
+            <div className="relative h-56 w-full overflow-hidden rounded-lg border border-white/10 bg-black/30 md:h-64">
+              <ModelViewport
+                modelUrl="/models/data-core.glb"
+                poster="/models/posters/data-core.webp"
+                accentMaterials={ACCENT_MATERIALS}
+                rotationSeconds={IDLE_ROTATION_SECONDS}
+                className="absolute inset-0"
+              />
+            </div>
           </Panel>
         </m.div>
       </div>

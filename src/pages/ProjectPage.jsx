@@ -5,9 +5,22 @@ import { fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { getProject } from "../data/projects";
+import ModelViewport from "../components/ModelViewport";
+import { ACCENT_MATERIALS, IDLE_ROTATION_SECONDS } from "../lib/modelTheme";
 
 // Behind the [ OPEN CASE FILE ] trigger — loads on first open.
 const DossierModal = lazy(() => import("../components/DossierModal"));
+
+// Only the DLP Scanner dossier gets the cipher-gate set piece (see the 3D
+// placement proposal: a gate motif for the case study about gating what
+// data is allowed to leave). Every other flagship page's header is
+// unaffected by this file's layout changes.
+const MODEL_BY_SLUG = {
+  "dlp-scanner": {
+    modelUrl: "/models/cipher-gate.glb",
+    poster: "/models/posters/cipher-gate.webp",
+  },
+};
 
 const STATUS_TONE = {
   red: "border-red-500/40 bg-red-500/10 text-red-400",
@@ -42,8 +55,12 @@ export default function ProjectPage() {
   // Only flagship projects have dedicated pages; anything else returns home.
   if (!project || !project.flagship) return <Navigate to="/" replace />;
 
+  const model = MODEL_BY_SLUG[project.slug];
+
   return (
-    <div className="mx-auto max-w-3xl px-6 pb-28 pt-28 md:pt-32">
+    <div
+      className={`mx-auto px-6 pb-28 pt-28 md:pt-32 ${model ? "max-w-3xl lg:max-w-5xl" : "max-w-3xl"}`}
+    >
       <Link
         to="/#operations"
         className="inline-flex min-h-[44px] items-center font-mono text-[11px] tracking-[0.25em] text-white/55 transition-colors duration-300 hover:text-neon"
@@ -51,54 +68,88 @@ export default function ProjectPage() {
         {t("project.back")}
       </Link>
 
-      <m.div
-        variants={stagger}
-        initial={shouldReduce ? false : "hidden"}
-        animate="visible"
-        className="mt-8"
-      >
-        <m.div variants={fadeUp} className="flex flex-wrap items-center gap-2 font-mono text-[10px] tracking-[0.2em]">
-          {project.statusTags?.map((tag) => (
-            <span
-              key={tag.text}
-              className={`rounded border px-2 py-1 ${STATUS_TONE[tag.tone] ?? STATUS_TONE.neutral}`}
+      <div className={model ? "lg:flex lg:items-start lg:gap-10" : undefined}>
+        <m.div
+          variants={stagger}
+          initial={shouldReduce ? false : "hidden"}
+          animate="visible"
+          className={`mt-8 ${model ? "lg:min-w-0 lg:flex-1" : ""}`}
+        >
+          <m.div variants={fadeUp} className="flex flex-wrap items-center gap-2 font-mono text-[10px] tracking-[0.2em]">
+            {project.statusTags?.map((tag) => (
+              <span
+                key={tag.text}
+                className={`rounded border px-2 py-1 ${STATUS_TONE[tag.tone] ?? STATUS_TONE.neutral}`}
+              >
+                {tag.text}
+              </span>
+            ))}
+          </m.div>
+
+          <m.p variants={fadeUp} className="mt-6 font-mono text-[11px] tracking-[0.35em] text-neon">
+            {project.codename}
+          </m.p>
+          <m.h1 variants={fadeUp} className="mt-3 font-display text-4xl font-bold text-white md:text-5xl">
+            {project.title}
+          </m.h1>
+          <m.p variants={fadeUp} className="mt-5 max-w-2xl font-mono text-sm leading-relaxed text-white/60 md:text-base">
+            {tr(project.summary)}
+          </m.p>
+
+          <m.div variants={fadeUp} className="mt-7 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.2em]">
+            <button
+              type="button"
+              onClick={() => {
+                setDossierMounted(true);
+                setDossierOpen(true);
+              }}
+              className="border border-red-500/40 bg-red-500/[0.06] px-4 py-2.5 text-red-300 transition-all duration-200 hover:bg-red-500/15 active:scale-[0.97]"
             >
-              {tag.text}
-            </span>
-          ))}
+              {t("project.openCaseFile")}
+            </button>
+            <a
+              href={project.repo}
+              target="_blank"
+              rel="noreferrer"
+              className="border border-white/15 px-4 py-2.5 text-white/55 transition-[color,border-color,transform] duration-300 hover:border-neon/40 hover:text-neon active:scale-[0.97] active:duration-100"
+            >
+              {t("project.viewOnGithub")}
+            </a>
+          </m.div>
         </m.div>
 
-        <m.p variants={fadeUp} className="mt-6 font-mono text-[11px] tracking-[0.35em] text-neon">
-          {project.codename}
-        </m.p>
-        <m.h1 variants={fadeUp} className="mt-3 font-display text-4xl font-bold text-white md:text-5xl">
-          {project.title}
-        </m.h1>
-        <m.p variants={fadeUp} className="mt-5 max-w-2xl font-mono text-sm leading-relaxed text-white/60 md:text-base">
-          {tr(project.summary)}
-        </m.p>
-
-        <m.div variants={fadeUp} className="mt-7 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.2em]">
-          <button
-            type="button"
-            onClick={() => {
-              setDossierMounted(true);
-              setDossierOpen(true);
-            }}
-            className="border border-red-500/40 bg-red-500/[0.06] px-4 py-2.5 text-red-300 transition-all duration-200 hover:bg-red-500/15 active:scale-[0.97]"
-          >
-            {t("project.openCaseFile")}
-          </button>
-          <a
-            href={project.repo}
-            target="_blank"
-            rel="noreferrer"
-            className="border border-white/15 px-4 py-2.5 text-white/55 transition-[color,border-color,transform] duration-300 hover:border-neon/40 hover:text-neon active:scale-[0.97] active:duration-100"
-          >
-            {t("project.viewOnGithub")}
-          </a>
-        </m.div>
-      </m.div>
+        {model && (
+          <div className="mt-8 lg:mt-8 lg:w-[300px] lg:shrink-0">
+            {/* Below lg: a plain lazy-loaded poster, no JS/WebGL cost at all —
+                the case-file header is already tight above the mobile fold,
+                so the set piece here is decorative-when-affordable only.
+                Above lg: the full idle-rotating viewport, beside the header
+                text, calm/procedural (rotation only, no parallax). Both nodes
+                are always in the DOM; only Tailwind's `lg:` breakpoint picks
+                which one paints, so there's no client-side layout flash. */}
+            <img
+              src={model.poster}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              className="aspect-[4/3] w-full rounded-2xl border border-white/10 object-cover lg:hidden"
+            />
+            <div className="relative hidden aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-black/30 lg:block">
+              <ModelViewport
+                modelUrl={model.modelUrl}
+                poster={model.poster}
+                accentMaterials={ACCENT_MATERIALS}
+                rotationSeconds={IDLE_ROTATION_SECONDS}
+                className="absolute inset-0"
+              />
+            </div>
+            <p className="mt-3 text-center font-mono text-[10px] tracking-[0.25em] text-white/50 lg:text-left">
+              {t("project.modelCaption")}
+            </p>
+          </div>
+        )}
+      </div>
 
       {project.authorized && (
         <m.p

@@ -119,6 +119,7 @@ export const en = {
     session: "SESSION",
     traffic: "NET TRAFFIC",
     map: "PERIMETER MAP",
+    dataCore: "DATA CORE",
     uptimeLabel: "UPTIME",
     integrityLabel: "INTEGRITY",
     nodeLabel: "NODE",
@@ -173,6 +174,7 @@ export const en = {
     title: "Establish direct connection.",
     intro:
       "Channel open. Inbox monitored. Whether it's an incident that needs answers or a system that needs hardening, transmissions land here.",
+    modelCaption: "QUANTUM-LOCK // SECURE CHANNEL",
     copyright: "© 2026 ANASTASIOS SOUMPAKIS // UNIVERSITY OF THE AEGEAN",
     warning: "NO TRACKERS. NO ANALYTICS. YOUR SESSION STAYS YOURS.",
     copy: {
@@ -209,6 +211,7 @@ export const en = {
     openCaseFile: "[ OPEN CASE FILE ]",
     viewOnGithub: "VIEW ON GITHUB ↗",
     notFound: "Case file not found.",
+    modelCaption: "CIPHER-GATE // ACCESS SCHEMATIC",
     sections: {
       overview: "OVERVIEW",
       architecture: "ARCHITECTURE",

@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { m, useReducedMotion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import CopyButton from "./CopyButton";
+import ModelViewport from "./ModelViewport";
 import { fadeUp, stagger } from "../lib/motion";
 import { useI18n } from "../i18n/LanguageContext";
 import { SITE } from "../data/site";
+import { ACCENT_MATERIALS, IDLE_ROTATION_SECONDS } from "../lib/modelTheme";
 
 const GLYPHS = "!<>-_\\/[]{}=+*^?#@$%&01";
 
@@ -111,25 +113,44 @@ export default function ContactFooter() {
             {t("contact.intro")}
           </m.p>
 
-          <div className="mt-14 flex flex-col gap-6">
-            <ContactRow
-              prefix="EMAIL"
-              label={SITE.email}
-              href={`mailto:${SITE.email}`}
-              copyAriaKey="contact.copy.copyEmail"
-            />
-            <ContactRow
-              prefix="GITHUB"
-              label={SITE.githubHandle}
-              href={SITE.github}
-              copyAriaKey="contact.copy.copyGithub"
-            />
-            <ContactRow
-              prefix="LINKEDIN"
-              label={SITE.linkedinHandle}
-              href={SITE.linkedin}
-              copyAriaKey="contact.copy.copyLinkedin"
-            />
+          {/* quantum-lock closes the site: stacked above the channels on
+              mobile, beside them from md up. Idle rotation only — no
+              parallax tie-in to the cursor here, deliberately out of scope. */}
+          <div className="mt-14 flex flex-col gap-10 md:flex-row md:items-start md:gap-12">
+            <div className="md:w-[200px] md:shrink-0">
+              <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-black/30">
+                <ModelViewport
+                  modelUrl="/models/quantum-lock.glb"
+                  poster="/models/posters/quantum-lock.webp"
+                  accentMaterials={ACCENT_MATERIALS}
+                  rotationSeconds={IDLE_ROTATION_SECONDS}
+                  className="absolute inset-0"
+                />
+              </div>
+              <p className="mt-3 text-center font-mono text-[10px] tracking-[0.25em] text-white/50 md:text-left">
+                {t("contact.modelCaption")}
+              </p>
+            </div>
+            <div className="flex flex-1 flex-col gap-6">
+              <ContactRow
+                prefix="EMAIL"
+                label={SITE.email}
+                href={`mailto:${SITE.email}`}
+                copyAriaKey="contact.copy.copyEmail"
+              />
+              <ContactRow
+                prefix="GITHUB"
+                label={SITE.githubHandle}
+                href={SITE.github}
+                copyAriaKey="contact.copy.copyGithub"
+              />
+              <ContactRow
+                prefix="LINKEDIN"
+                label={SITE.linkedinHandle}
+                href={SITE.linkedin}
+                copyAriaKey="contact.copy.copyLinkedin"
+              />
+            </div>
           </div>
         </m.div>
 
