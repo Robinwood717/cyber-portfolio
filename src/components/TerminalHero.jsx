@@ -30,13 +30,24 @@ function Cursor() {
 }
 
 function useBootSequence(lines) {
-  const [pos, setPos] = useState(() => {
-    const skip =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    return skip ? { line: lines.length, char: 0 } : { line: 0, char: 0 };
-  });
+  // Always starts where the server starts. Reading prefers-reduced-motion in
+  // this initializer instead made the first client render disagree with the
+  // prerendered HTML for exactly the readers who asked for less motion: the
+  // server has no `window`, so it always rendered an unstarted transcript
+  // while those clients rendered a finished one. React treated that as a
+  // failed hydration and threw the whole prerendered tree away (#418/#423).
+  const [pos, setPos] = useState({ line: 0, char: 0 });
   const done = pos.line >= lines.length;
+
+  // Honour reduced motion here instead — effects run only on the client, and
+  // only after hydration has matched. Declared before the typing effect so it
+  // wins the race: the first typing tick is scheduled behind a 450ms timeout
+  // that this state change cancels via that effect's own cleanup.
+  useEffect(() => {
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) {
+      setPos({ line: lines.length, char: 0 });
+    }
+  }, [lines]);
 
   useEffect(() => {
     if (done) return undefined;

@@ -15,7 +15,12 @@ function pad(n) {
   return String(n).padStart(2, "0");
 }
 
+// `null` means "not stamped yet" — see ThreatFeed. Same glyph count as a real
+// reading so the row never reflows when the real time lands.
+const CLOCK_PLACEHOLDER = "--:--:--";
+
 function formatClock(date) {
+  if (!date) return CLOCK_PLACEHOLDER;
   return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
 
@@ -59,10 +64,24 @@ function Panel({ label, live = true, pulse = false, className = "", children }) 
 
 /* THREAT FEED — lines print in on a rolling cycle, newest on top. */
 function ThreatFeed({ lines, frozen }) {
+  // Seeded WITHOUT timestamps on purpose. The server has no idea what time it
+  // is where the reader is, so stamping here would bake the build machine's
+  // clock into the prerendered HTML — wrong for the reader, and a hydration
+  // mismatch that made React throw away the whole prerendered tree and
+  // re-render the page client-side (React #418/#423). The rows are stamped
+  // below, on the client, where "now" actually means something.
   const [entries, setEntries] = useState(() =>
-    lines.slice(0, 5).map((text, i) => ({ text, at: new Date(Date.now() - i * 4000), key: i }))
+    lines.slice(0, 5).map((text, i) => ({ text, at: null, key: i }))
   );
   const cursor = useRef(5);
+
+  // Runs after hydration, so it never affects the markup React matches
+  // against. Text-only, so it is safe while frozen (that gate is for motion).
+  useEffect(() => {
+    setEntries((prev) =>
+      prev.map((entry, i) => (entry.at ? entry : { ...entry, at: new Date(Date.now() - i * 4000) }))
+    );
+  }, []);
 
   useEffect(() => {
     if (frozen) return undefined;
