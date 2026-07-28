@@ -52,27 +52,54 @@ function Model({ url, accentMaterials, spin, rotationSeconds, onReady }) {
   const gltf = useLoader(GLTFLoader, url, configureLoader);
   const groupRef = useRef(null);
 
-  // One clone per load: materials are mutated in place below (emissive
-  // boost), and useLoader's cache is keyed by URL — mutating the cached
-  // original would corrupt any second consumer of the same model.
+  // One clone per load, because the materials get mutated below (emissive
+  // boost) and useLoader's cache is keyed by URL.
+  //
+  // Object3D.clone() is NOT enough on its own: it deep-copies the node
+  // hierarchy but leaves `material` and `geometry` as shared references to
+  // the cached original. Mutating them would write straight back into the
+  // loader cache, so every later consumer of this URL — a remount after a
+  // route change, or a second viewport on the same model — would inherit
+  // whatever accent the first one applied. Clone the materials explicitly.
+  // Geometry is left shared on purpose: it is never mutated here, and
+  // copying it per mount would duplicate the GPU buffers for nothing.
   const scene = useMemo(() => {
     const cloned = gltf.scene.clone(true);
     cloned.traverse((child) => {
       if (!child.isMesh || !child.material) return;
       child.castShadow = false;
       child.receiveShadow = false;
-      const mat = child.material;
-      mat.toneMapped = false;
-      if (accentMaterials.includes(mat.name)) {
-        mat.emissive = NEON.clone();
-        mat.emissiveIntensity = 0.85;
-      }
-      if (typeof mat.roughness === "number") {
-        mat.roughness = Math.min(mat.roughness, 0.55);
+      const own = Array.isArray(child.material)
+        ? child.material.map((m) => m.clone())
+        : child.material.clone();
+      child.material = own;
+      for (const mat of Array.isArray(own) ? own : [own]) {
+        mat.toneMapped = false;
+        if (accentMaterials.includes(mat.name)) {
+          mat.emissive = NEON.clone();
+          mat.emissiveIntensity = 0.85;
+        }
+        if (typeof mat.roughness === "number") {
+          mat.roughness = Math.min(mat.roughness, 0.55);
+        }
       }
     });
     return cloned;
   }, [gltf, accentMaterials]);
+
+  // r3f never disposes `<primitive>` objects (it does not own them), and the
+  // per-mount material clones above are ours — release them explicitly so a
+  // route change does not strand them on the GPU.
+  useEffect(() => {
+    return () => {
+      scene.traverse((child) => {
+        if (!child.isMesh || !child.material) return;
+        for (const mat of Array.isArray(child.material) ? child.material : [child.material]) {
+          mat.dispose();
+        }
+      });
+    };
+  }, [scene]);
 
   useAutoFrame(scene, onReady);
 
@@ -98,7 +125,22 @@ export default function Scene3D({
   reducedMotion = false,
   rotationSeconds = IDLE_ROTATION_SECONDS,
   onReady,
+  onContextLost,
+  onContextRestored,
 }) {
+  // Context loss (GPU reset, laptop sleep/wake, another page exhausting the
+  // browser's context cap) does not throw — the canvas just silently stops
+  // painting. Surface it so the caller can put its poster back up.
+  const handleCreated = ({ gl }) => {
+    const canvas = gl.domElement;
+    canvas.addEventListener("webglcontextlost", (event) => {
+      // Preventing the default is what makes restoration possible at all.
+      event.preventDefault();
+      onContextLost?.();
+    });
+    canvas.addEventListener("webglcontextrestored", () => onContextRestored?.());
+  };
+
   return (
     <Canvas
       dpr={[1, 1.5]}
@@ -106,6 +148,7 @@ export default function Scene3D({
       camera={{ fov: 32, position: [0, 0.6, 3.4] }}
       frameloop={active && !reducedMotion ? "always" : "demand"}
       style={{ position: "absolute", inset: 0 }}
+      onCreated={handleCreated}
     >
       {/* Matte void base lit by a cool key + a neon-tinted rim from behind —
           the cheap stand-in for a real fresnel pass (see report: a true

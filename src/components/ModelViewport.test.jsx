@@ -11,10 +11,13 @@ import { createRoot } from "react-dom/client";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
-const { sceneMountSpy, sceneUnmountSpy, scenePropsLog } = vi.hoisted(() => ({
+const { sceneMountSpy, sceneUnmountSpy, scenePropsLog, sceneControl } = vi.hoisted(() => ({
   sceneMountSpy: vi.fn(),
   sceneUnmountSpy: vi.fn(),
   scenePropsLog: [],
+  // Lets a single test flip the mocked scene into "throws on render" so the
+  // error-boundary path can be exercised without real WebGL.
+  sceneControl: { throwOnRender: false },
 }));
 
 // Mocking the module Scene3D.jsx (not re-implementing it) lets us prove
@@ -28,6 +31,9 @@ vi.mock("./Scene3D", () => {
   return {
     default: function MockScene3D(props) {
       scenePropsLog.push(props);
+      if (sceneControl.throwOnRender) {
+        throw new Error("simulated scene failure");
+      }
       // Mirrors the real component's onReady contract without depending on
       // any three.js/WebGL behaviour.
       useEffect(() => {
@@ -75,12 +81,30 @@ function mockMatchMedia(matches) {
   return mql;
 }
 
+// Tracks every probe context handed out and whether it was released, so a
+// test can assert the WebGL-support probe does not leak contexts against the
+// browser's hard per-page cap.
+const glProbes = [];
+
 function mockWebGL(supported) {
+  glProbes.length = 0;
   if (supported) {
     window.WebGLRenderingContext = function WebGLRenderingContext() {};
-    window.HTMLCanvasElement.prototype.getContext = vi.fn((type) =>
-      type === "webgl" || type === "experimental-webgl" ? {} : null
-    );
+    window.HTMLCanvasElement.prototype.getContext = vi.fn((type) => {
+      if (type !== "webgl" && type !== "experimental-webgl") return null;
+      const probe = { released: false };
+      probe.getExtension = vi.fn((name) =>
+        name === "WEBGL_lose_context"
+          ? {
+              loseContext: () => {
+                probe.released = true;
+              },
+            }
+          : null
+      );
+      glProbes.push(probe);
+      return probe;
+    });
   } else {
     delete window.WebGLRenderingContext;
     window.HTMLCanvasElement.prototype.getContext = vi.fn(() => null);
@@ -105,6 +129,7 @@ describe("ModelViewport gating", () => {
     sceneMountSpy.mockClear();
     sceneUnmountSpy.mockClear();
     scenePropsLog.length = 0;
+    sceneControl.throwOnRender = false;
     FakeIntersectionObserver.instances = [];
     vi.stubGlobal("IntersectionObserver", FakeIntersectionObserver);
     mockMatchMedia(false);
@@ -245,5 +270,44 @@ describe("ModelViewport gating", () => {
     expect(observer.disconnected).toBe(false);
     act(() => root.unmount());
     expect(observer.disconnected).toBe(true);
+  });
+
+  // Browsers cap live WebGL contexts per page (Chrome: 16) and evict the
+  // OLDEST one when the cap is passed. The support probe creates a real
+  // context, so leaking one per mount means a handful of SPA navigations can
+  // silently kill a *live* scene's context and black the canvas out.
+  it("releases the WebGL context it creates just to probe for support", () => {
+    renderViewport();
+    expect(glProbes.length).toBeGreaterThan(0);
+    expect(glProbes.every((p) => p.released)).toBe(true);
+  });
+
+  // The poster is the fallback, so it must come back whenever the canvas
+  // stops being able to show anything. If the scene throws *after* it has
+  // already reported ready, the canvas unmounts while the poster is still
+  // faded out — leaving a completely empty box.
+  it("fades the poster back in when the scene fails after it had become ready", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      renderViewport();
+      enterViewport();
+      await act(async () => {});
+
+      const img = container.querySelector("img");
+      expect(img.className).toContain("opacity-0");
+
+      sceneControl.throwOnRender = true;
+      const observer = FakeIntersectionObserver.instances[0];
+      act(() => observer.trigger(false));
+      act(() => observer.trigger(true));
+      await act(async () => {});
+
+      expect(container.querySelector("canvas")).toBeNull();
+      expect(container.querySelector("img").className).toContain("opacity-100");
+    } finally {
+      consoleError.mockRestore();
+      consoleWarn.mockRestore();
+    }
   });
 });

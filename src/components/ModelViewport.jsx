@@ -10,14 +10,22 @@ const Scene3D = lazy(() => import("./Scene3D"));
 
 function supportsWebGL() {
   if (typeof window === "undefined" || typeof document === "undefined") return false;
+  if (!window.WebGLRenderingContext) return false;
+  let gl = null;
   try {
     const canvas = document.createElement("canvas");
-    return !!(
-      window.WebGLRenderingContext &&
-      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
-    );
+    gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    return !!gl;
   } catch {
     return false;
+  } finally {
+    // Dropping the canvas reference is NOT enough: the context stays live
+    // until GC, and browsers cap live contexts per page (Chrome: 16), evicting
+    // the OLDEST when the cap is passed. Since this probe runs on every mount
+    // and the site is an SPA, a handful of route changes would otherwise
+    // accumulate enough zombie probes to evict a *live* scene's context and
+    // black its canvas out. Hand it back immediately instead.
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
   }
 }
 
@@ -35,6 +43,10 @@ class SceneErrorBoundary extends Component {
   }
   componentDidCatch(error) {
     console.warn("3D scene failed, keeping poster fallback:", error);
+    // The canvas is about to unmount. If it had already reported ready the
+    // poster is faded out, so without this the panel would go completely
+    // empty rather than falling back.
+    this.props.onFailure?.();
   }
   render() {
     return this.state.failed ? null : this.props.children;
@@ -114,7 +126,7 @@ export default function ModelViewport({
         }`}
       />
       {showCanvas && (
-        <SceneErrorBoundary>
+        <SceneErrorBoundary onFailure={() => setReady(false)}>
           <Suspense fallback={null}>
             <Scene3D
               modelUrl={modelUrl}
@@ -123,6 +135,10 @@ export default function ModelViewport({
               reducedMotion={reducedMotion}
               rotationSeconds={rotationSeconds}
               onReady={() => setReady(true)}
+              // A lost GPU context does not throw, so the boundary never sees
+              // it — the canvas just goes blank. Bring the poster back instead.
+              onContextLost={() => setReady(false)}
+              onContextRestored={() => setReady(true)}
             />
           </Suspense>
         </SceneErrorBoundary>
