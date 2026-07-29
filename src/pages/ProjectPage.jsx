@@ -125,22 +125,19 @@ export default function ProjectPage() {
 
         {model && (
           <div className="mt-8 lg:mt-8 lg:w-[300px] lg:shrink-0">
-            {/* Below lg: a plain lazy-loaded poster, no JS/WebGL cost at all —
-                the case-file header is already tight above the mobile fold,
-                so the set piece here is decorative-when-affordable only.
-                Above lg: the full idle-rotating viewport, beside the header
-                text, calm/procedural (rotation only, no parallax). Both nodes
-                are always in the DOM; only Tailwind's `lg:` breakpoint picks
-                which one paints, so there's no client-side layout flash. */}
-            <img
-              src={model.poster}
-              alt=""
-              aria-hidden="true"
-              loading="lazy"
-              decoding="async"
-              className="aspect-[4/3] w-full rounded-2xl border border-white/10 object-cover lg:hidden"
-            />
-            <div className="relative hidden aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-black/30 lg:block">
+            {/* One viewport at every width, the same way the Command Center
+                and contact footer mount theirs. This used to be two nodes —
+                a plain poster below lg and the live viewport above it — but
+                `hidden` gave the viewport a 0x0 box, so its IntersectionObserver
+                never fired, Scene3D never mounted, and phones got a still
+                image while the home page animated. ModelViewport already
+                paints the poster first and cross-fades the canvas over it, so
+                the separate mobile <img> was duplicating work it does anyway.
+                It still declines to build a context on devices without WebGL
+                or with data-saver on, and reduced motion still freezes the
+                rotation — so the cost stays opt-out, not unconditional.
+                4:3 on phones, square beside the header text on desktop. */}
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-white/10 bg-black/30 lg:aspect-square">
               <ModelViewport
                 modelUrl={model.modelUrl}
                 poster={model.poster}
